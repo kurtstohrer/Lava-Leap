@@ -18,8 +18,11 @@ app.main = {
 	aspectRatio: undefined,
     canvas: undefined,
     ctx: undefined,
+	players: [],
+	colors: ["green", "red", "blue", "black"],
 	platforms1: [],
 	platforms2: [],
+	gamestate: "GAME",
     
     // methods
 	init : function() {
@@ -30,6 +33,18 @@ app.main = {
 		this.ctx = this.canvas.getContext('2d');
 		
 		this.ctx.textAlign = 'center';
+		
+		//get connected gamepads
+		var pad = navigator.getGamepads();
+		
+		//loop through and create a player for each gamepad
+		for(var i = 0; i < pad.length; i++){
+			
+			if(pad[i] != undefined){
+			
+				this.players.push(new Player((this.WIDTH/4)*(i+1)-240, 800, this.colors[i], i));
+			}
+		}
 		
 		var pwidth = Math.random() * 300 + 100;
 		var px = Math.random() * (this.WIDTH - pwidth);
@@ -43,74 +58,93 @@ app.main = {
 		
 	draw: function()
 	{
-		this.ctx.save();
-		this.ctx.fillStyle = "white";
-		this.ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
-		this.ctx.restore();
-		for(var i = 0; i < this.platforms1.length; i++)
-		{
-			this.platforms1[i].draw(this.ctx);
-		}
-		for(var i = 0; i < this.platforms2.length; i++)
-		{
-			this.platforms2[i].draw(this.ctx);
+		if(this.gamestate == "GAME"){
+		
+			this.ctx.save();
+			this.ctx.fillStyle = "white";
+			this.ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+			this.ctx.restore();
+			for(var i = 0; i < this.platforms1.length; i++)
+			{
+				this.platforms1[i].draw(this.ctx);
+			}
+			for(var i = 0; i < this.platforms2.length; i++)
+			{
+				this.platforms2[i].draw(this.ctx);
+			}
+			
+			//loop through and draw the players
+			for(var i = 0; i < this.players.length; i++){
+				
+				this.players[i].draw(this.ctx);
+			}
 		}
 	},
 	
 	update: function()
 	{
-		requestAnimationFrame(this.update.bind(this));
-		var highest1 = this.HEIGHT;
-		var highest1index = 0;
-		var highest2 = this.HEIGHT;
-		var highest2index = 0;
-		for(var i = 0; i < this.platforms1.length; i++)
-		{
-			if(highest1 > this.platforms1[i].y)
-			{
-				highest1 = this.platforms1[i].y;
-				highest1index = i;
+		if(this.gamestate == "GAME"){
+		
+			//loop through and update the players
+			for(var i = 0; i < this.players.length; i++){
+				
+				this.players[i].update(this.dt);
 			}
-			this.platforms1[i].update(this.dt);
-		}
-		for(var i = 0; i < this.platforms2.length; i++)
-		{
-			if(highest2 > this.platforms2[i].y)
+		
+			requestAnimationFrame(this.update.bind(this));
+			
+			var highest1 = this.HEIGHT;
+			var highest1index = 0;
+			var highest2 = this.HEIGHT;
+			var highest2index = 0;
+			for(var i = 0; i < this.platforms1.length; i++)
 			{
-				highest2 = this.platforms2[i].y;
-				highest2index = i;
+				if(highest1 > this.platforms1[i].y)
+				{
+					highest1 = this.platforms1[i].y;
+					highest1index = i;
+				}
+				this.platforms1[i].update(this.dt);
 			}
-			this.platforms2[i].update(this.dt);
-		}
-		if(highest1 > 200)
-		{
-			var pwidth = Math.random() * 300 + 100;
-			var px = Math.random() * 1200 + this.platforms1[highest1index].x - 600;
-			if(px + pwidth > this.WIDTH)
+			for(var i = 0; i < this.platforms2.length; i++)
 			{
-				 var diff =  px + pwidth - this.WIDTH;
-				 px -= 2 * diff;
+				if(highest2 > this.platforms2[i].y)
+				{
+					highest2 = this.platforms2[i].y;
+					highest2index = i;
+				}
+				this.platforms2[i].update(this.dt);
 			}
-			if(px < 0)
+			if(highest1 > 200)
 			{
-				px = -px;
+				var pwidth = Math.random() * 300 + 100;
+				var px = Math.random() * 1200 + this.platforms1[highest1index].x - 600;
+				if(px + pwidth > this.WIDTH)
+				{
+					var diff =  px + pwidth - this.WIDTH;
+					px -= 2 * diff;
+				}
+				if(px < 0)
+				{
+					px = -px;
+				}
+				this.platforms1.push(new app.Platform(pwidth, px));
 			}
-			this.platforms1.push(new app.Platform(pwidth, px));
-		}
-		if(highest2 > 200)
-		{
-			var pwidth = Math.random() * 300 + 100;
-			var px = Math.random() * 1200 + this.platforms2[highest2index].x - 600;
-			if(px + pwidth > this.WIDTH)
+			if(highest2 > 200)
 			{
-				 var diff =  px + pwidth - this.WIDTH;
-				 px -= 2 * diff;
+				var pwidth = Math.random() * 300 + 100;
+				var px = Math.random() * 1200 + this.platforms2[highest2index].x - 600;
+				if(px + pwidth > this.WIDTH)
+				{
+					var diff =  px + pwidth - this.WIDTH;
+					px -= 2 * diff;
+				}
+				if(px < 0)
+				{
+					px = -px;
+				}
+				this.platforms2.push(new app.Platform(pwidth, px));
 			}
-			if(px < 0)
-			{
-				px = -px;
-			}
-			this.platforms2.push(new app.Platform(pwidth, px));
 		}
 		
 		this.draw();
