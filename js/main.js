@@ -10,10 +10,13 @@
 // else create a new object literal
 var app = app || {};
 
+app.keydown = [];
+
 app.main = {
 	// CONSTANT properties
     WIDTH : 1920 ,
     HEIGHT: 1080, 
+	PLATFORM_DIFFERENCE: 200,
 	dt: 1/60.0,
 	aspectRatio: undefined,
     canvas: undefined,
@@ -24,6 +27,7 @@ app.main = {
 	platforms2: [],
 	startPlatform: undefined,
 	gamestate: "GAME",
+	ticks: 0,
     
     // methods
 	init : function() {
@@ -39,11 +43,15 @@ app.main = {
 		var pad = navigator.getGamepads();
 		
 		//loop through and create a player for each gamepad
-		for(var i = 0; i < pad.length; i++){
+		for(var i = 0; i < 2; i++)
+		{
+			this.players.push(new Player((this.WIDTH/4)*(i+1)-240, 500, this.colors[i], i));
+		}
+		for(var i = 2; i < pad.length; i++){
 			
 			if(pad[i] != undefined){
 			
-				this.players.push(new Player((this.WIDTH/4)*(i+1)-240, 800, this.colors[i], i));
+				this.players.push(new Player((this.WIDTH/4)*(i+1)-240, 500, this.colors[i], i));
 			}
 		}
 		
@@ -95,12 +103,28 @@ app.main = {
 		if(this.gamestate == "GAME")
 		{
 			//loop through and update the players
+			this.ticks++;
 			for(var i = 0; i < this.players.length; i++){
 				
 				this.players[i].update(this.dt);
+				while(this.players[i].y < 200)
+				{
+					for(var j = 0; j < this.players.length; j++)
+					{
+						this.players[j].y += 1;
+					}
+					for(var j = 0; j < this.platforms1.length; j++)
+					{
+						this.platforms1[j].y += 1;
+					}
+					for(var j = 0; j < this.platforms2.length; j++)
+					{
+						this.platforms2[j].y += 1;
+					}
+				}
 			}
 		
-			if(/*clock >= 5 seconds &&*/ this.startPlatform.active)
+			if(this.platforms1[0].y + this.PLATFORM_DIFFERENCE * 2/3 > this.startPlatform.y && this.startPlatform.active)
 			{
 				this.startPlatform.update(this.dt);
 			}
@@ -127,7 +151,7 @@ app.main = {
 				}
 				this.platforms2[i].update(this.dt);
 			}
-			if(highest1 > 200)
+			if(highest1 > this.PLATFORM_DIFFERENCE)//this.PLATFORM_DIFFERENCE = 200
 			{
 				var pwidth = Math.random() * 300 + 100;
 				var px = Math.random() * 1200 + this.platforms1[highest1index].x - 600;
@@ -142,7 +166,7 @@ app.main = {
 				}
 				this.platforms1.push(new app.Platform(pwidth, px));
 			}
-			if(highest2 > 200)
+			if(highest2 > this.PLATFORM_DIFFERENCE)//this.PLATFORM_DIFFERENCE = 200
 			{
 				var pwidth = Math.random() * 300 + 100;
 				var px = Math.random() * 1200 + this.platforms2[highest2index].x - 600;
@@ -178,5 +202,16 @@ app.main = {
 
 window.onload = function() {
 	console.log("init called");
+	
+	window.addEventListener("keydown", function(e){
+		//console.log("keydown " + e.keyCode);
+		app.keydown[e.keyCode] = true;
+	});
+	
+	window.addEventListener("keyup", function(e){
+		//console.log("keyup");
+		app.keydown[e.keyCode] = false;
+	});
+	
 	app.main.init();
 }
