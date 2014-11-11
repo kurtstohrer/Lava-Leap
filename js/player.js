@@ -7,6 +7,8 @@ var Player = function Player(x, y, color, controls){
 	//variables
 	this.x = x;
 	this.y = y;
+	this.prevx = this.x;
+	this.prevy = this.y;
 	this.color = color;
 	this.acceleration = 20;
 	this.xVelocity = 2;
@@ -17,10 +19,15 @@ var Player = function Player(x, y, color, controls){
 	this.ground = 300;
 	this.width = 10;
 	this.height = 10;
+	this.canJump = false;
+	this.canHoldJump = false;
 }
 
 //update
-Player.prototype.update = function update(dt){
+Player.prototype.update = function update(dt)
+{
+	this.prevx = this.x;
+	this.prevy = this.y;
 	
 	//grab this players controller
 	var pad = navigator.getGamepads()[this.controller];
@@ -56,10 +63,20 @@ Player.prototype.update = function update(dt){
 		right = app.keydown[68];//D
 	}
 	//if the A button is pressed
-	if(jump){
-		
-		this.yVelocity = -600;
-		
+	if(jump && this.canHoldJump)
+	{
+		if(this.canJump)
+		{
+			this.yVelocity = -600;
+		}
+		else
+		{
+			this.yVelocity -= 5;
+		}
+	}
+	else
+	{
+		this.canHoldJump = false;
 	}
 	
 	//if the left D-pad is pressed of the left stick moved left, go left and limit the speed
@@ -88,10 +105,6 @@ Player.prototype.update = function update(dt){
 	
 	this.yVelocity += this.gravity;
 	this.y += this.yVelocity * dt;
-	if(this.y > 1080 * 3/5 - this.height)
-	{
-		this.y = 1080 * 3/5 - this.height;
-	}
 	
 };
 

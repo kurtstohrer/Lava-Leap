@@ -13,7 +13,6 @@ app.Platform = function()
 		this.x = x; //point (x,y) is top left of platform, make sure platform generation is consistent with that
 		this.y = -this.height;
 		this.active = true;
-		this.yVelocity = 150;
 	}
 	
 	var p = Platform.prototype;
@@ -23,9 +22,9 @@ app.Platform = function()
 		
 	}
 	
-	p.update = function(dt)
+	p.update = function(dt, speed)
 	{
-		this.y += this.yVelocity * dt;
+		this.y += speed * dt;
 		this.active = this.active && this.y < 1080;
 	};
 	

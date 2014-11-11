@@ -28,6 +28,7 @@ app.main = {
 	startPlatform: undefined,
 	gamestate: "GAME",
 	ticks: 0,
+	speed: 150,
     
     // methods
 	init : function() {
@@ -61,6 +62,7 @@ app.main = {
 		pwidth = Math.random() * 300 + 100;
 		px = Math.random() * (this.WIDTH - pwidth);
 		this.platforms2.push(new app.Platform(pwidth, px));
+		
 		this.startPlatform = new app.Platform(this.WIDTH, 0);
 		this.startPlatform.y = this.HEIGHT * 3/5;
 			
@@ -81,17 +83,89 @@ app.main = {
 			}
 			for(var i = 0; i < this.platforms1.length; i++)
 			{
-				this.platforms1[i].draw(this.ctx);
+				this.platforms1[i].draw(this.ctx, 1);
 			}
 			for(var i = 0; i < this.platforms2.length; i++)
 			{
 				this.platforms2[i].draw(this.ctx);
 			}
-			
 			//loop through and draw the players
 			for(var i = 0; i < this.players.length; i++){
 				
 				this.players[i].draw(this.ctx);
+			}
+		}
+	},
+	
+	checkCollosions: function()
+	{
+		for(var i = 0; i < this.players.length; i++)
+		{
+			var player = this.players[i];
+			player.canJump =  false;
+			for(var j = 0; j < this.platforms1.length; j++)
+			{
+				var platform = this.platforms1[j];
+				if(player.y + player.height >= platform.y && player.prevy + player.height <= platform.y)
+				{
+					//console.log("110");
+					var xdiff = player.x - player.prevx;
+					var ydiff = player.y - player.prevy;
+					var pct = (platform.y - player.prevy) / ydiff;
+					//if((player.x + (pct * xdiff) >= platform.x && player.x + (pct * xdiff) <= platform.x + platform.width) ||
+					//	(player.x + player.width + (pct * xdiff) >= platform.x && player.x + player.width + (pct * xdiff) <= platform.x + platform.width))
+					if((player.x >= platform.x && player.x <= platform.x + platform.width) ||
+						(player.x + player.width >= platform.x && player.x + player.width <= platform.x + platform.width))
+					{
+						//player.x = player.prevx + pct * xdiff;
+						player.y = player.prevy - player.height + pct * ydiff;
+						player.yVelocity = this.speed;
+						player.canJump = true;
+						player.canHoldJump = true;
+					}
+				}
+			}
+			for(var j = 0; j < this.platforms2.length; j++)
+			{
+				var platform = this.platforms2[j];
+				if(player.y + player.height >= platform.y && player.prevy + player.height <= platform.y)
+				{
+					var xdiff = player.x - player.prevx;
+					var ydiff = player.y - player.prevy;
+					var pct = (platform.y - player.prevy) / ydiff;
+					//if((player.x + (pct * xdiff) >= platform.x && player.x + (pct * xdiff) <= platform.x + platform.width) ||
+					//	(player.x + player.width + (pct * xdiff) >= platform.x && player.x + player.width + (pct * xdiff) <= platform.x + platform.width))
+					if((player.x >= platform.x && player.x <= platform.x + platform.width) ||
+						(player.x + player.width >= platform.x && player.x + player.width <= platform.x + platform.width))
+					{
+						//player.x = player.prevx + pct * xdiff;
+						player.y = player.prevy - player.height + pct * ydiff;
+						player.yVelocity = this.speed;
+						player.canJump = true;
+						player.canHoldJump = true;
+					}
+				}
+			}
+			if(this.startPlatform.active)
+			{
+				var platform = this.startPlatform;
+				if(player.y + player.height >= platform.y && player.prevy + player.height <= platform.y)
+				{
+					var xdiff = player.x - player.prevx;
+					var ydiff = player.y - player.prevy;
+					var pct = (platform.y - player.prevy) / ydiff;
+					//if((player.x + (pct * xdiff) >= platform.x && player.x + (pct * xdiff) <= platform.x + platform.width) ||
+					//	(player.x + player.width + (pct * xdiff) >= platform.x && player.x + player.width + (pct * xdiff) <= platform.x + platform.width))
+					if((player.x >= platform.x && player.x <= platform.x + platform.width) ||
+						(player.x + player.width >= platform.x && player.x + player.width <= platform.x + platform.width))
+					{
+						//player.x = player.prevx + pct * xdiff;
+						player.y = player.prevy - player.height + pct * ydiff;
+						player.yVelocity = this.speed;
+						player.canJump = true;
+						player.canHoldJump = true;
+					}
+				}
 			}
 		}
 	},
@@ -121,12 +195,16 @@ app.main = {
 					{
 						this.platforms2[j].y += 1;
 					}
+					if(this.startPlatform.active)
+					{
+						this.startPlatform.y += 1;
+					}
 				}
 			}
 		
 			if(this.platforms1[0].y + this.PLATFORM_DIFFERENCE * 2/3 > this.startPlatform.y && this.startPlatform.active)
 			{
-				this.startPlatform.update(this.dt);
+				this.startPlatform.update(this.dt, this.speed);
 			}
 			
 			var highest1 = this.HEIGHT;
@@ -140,7 +218,7 @@ app.main = {
 					highest1 = this.platforms1[i].y;
 					highest1index = i;
 				}
-				this.platforms1[i].update(this.dt);
+				this.platforms1[i].update(this.dt, this.speed);
 			}
 			for(var i = 0; i < this.platforms2.length; i++)
 			{
@@ -149,7 +227,7 @@ app.main = {
 					highest2 = this.platforms2[i].y;
 					highest2index = i;
 				}
-				this.platforms2[i].update(this.dt);
+				this.platforms2[i].update(this.dt, this.speed);
 			}
 			if(highest1 > this.PLATFORM_DIFFERENCE)//this.PLATFORM_DIFFERENCE = 200
 			{
@@ -192,7 +270,7 @@ app.main = {
 			//console.log(this.platforms1.length + " " + this.platforms2.length);
 		}//END gamestate = "GAME"
 		
-		
+		this.checkCollosions()
 		this.draw();
 	},
 	
