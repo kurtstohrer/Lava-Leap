@@ -22,6 +22,7 @@ app.main = {
 	colors: ["green", "red", "blue", "black"],
 	platforms1: [],
 	platforms2: [],
+	startPlatform: undefined,
 	gamestate: "GAME",
     
     // methods
@@ -52,6 +53,8 @@ app.main = {
 		pwidth = Math.random() * 300 + 100;
 		px = Math.random() * (this.WIDTH - pwidth);
 		this.platforms2.push(new app.Platform(pwidth, px));
+		this.startPlatform = new app.Platform(this.WIDTH, 0);
+		this.startPlatform.y = this.HEIGHT * 3/5;
 			
 		this.update();
 	},
@@ -64,6 +67,10 @@ app.main = {
 			this.ctx.fillStyle = "white";
 			this.ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
 			this.ctx.restore();
+			if(this.startPlatform.active)
+			{
+				this.startPlatform.draw(this.ctx);
+			}
 			for(var i = 0; i < this.platforms1.length; i++)
 			{
 				this.platforms1[i].draw(this.ctx);
@@ -83,15 +90,20 @@ app.main = {
 	
 	update: function()
 	{
-		if(this.gamestate == "GAME"){
+		requestAnimationFrame(this.update.bind(this));
 		
+		if(this.gamestate == "GAME")
+		{
 			//loop through and update the players
 			for(var i = 0; i < this.players.length; i++){
 				
 				this.players[i].update(this.dt);
 			}
 		
-			requestAnimationFrame(this.update.bind(this));
+			if(/*clock >= 5 seconds &&*/ this.startPlatform.active)
+			{
+				this.startPlatform.update(this.dt);
+			}
 			
 			var highest1 = this.HEIGHT;
 			var highest1index = 0;
@@ -145,7 +157,17 @@ app.main = {
 				}
 				this.platforms2.push(new app.Platform(pwidth, px));
 			}
-		}
+			this.platforms1 = this.platforms1.filter(function(platform)
+			{
+				return platform.active;
+			});
+			this.platforms2 = this.platforms2.filter(function(platform)
+			{
+				return platform.active;
+			});
+			//console.log(this.platforms1.length + " " + this.platforms2.length);
+		}//END gamestate = "GAME"
+		
 		
 		this.draw();
 	},

@@ -12,6 +12,7 @@ app.Platform = function()
 		this.width = width;
 		this.x = x; //point (x,y) is top left of platform, make sure platform generation is consistent with that
 		this.y = -this.height;
+		this.active = true;
 	}
 	
 	var p = Platform.prototype;
@@ -24,6 +25,7 @@ app.Platform = function()
 	p.update = function(dt)
 	{
 		this.y += 150 * dt;
+		this.active = this.active && this.y < 1080;
 	};
 	
 	p.draw = function(ctx)
