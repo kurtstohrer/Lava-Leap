@@ -21,6 +21,7 @@ var Player = function Player(x, y, color, controls){
 	this.height = 10;
 	this.canJump = false;
 	this.canHoldJump = false;
+
 }
 
 //update
@@ -32,18 +33,22 @@ Player.prototype.update = function update(dt)
 	//grab this players controller
 	var pad = navigator.getGamepads()[this.controller];
 	
+
+	
 	var jump;
 	var left;
 	var right;
 	var run;
+	var start;
 	//if it is not undefined
 	if(pad != undefined)
-	{aw
+	{
 		//assign button values to save typing time
 		jump = pad.buttons[0].pressed; //A button
 		run = pad.buttons[2].pressed; // X button
 		left = ((pad.axes[0] < -0.2) || (pad.buttons[14].pressed));//left stick left or dpad left
 		right = ((pad.axes[0] > 0.2) || (pad.buttons[15].pressed));//left stick right or dpad right
+		start = pad.buttons[8].pressed;// Start Button
 		//var leftStickX = pad.axes[0];
 		//var dPadLeft = pad.buttons[14];
 		//var dPadRight = pad.buttons[15];
@@ -54,6 +59,7 @@ Player.prototype.update = function update(dt)
 		run = app.keydown[13];//NUMPAD ENTER
 		left = app.keydown[100];//NUMPAD 4
 		right = app.keydown[102];//NUMPAD 6
+		start = app.keydown[80]; // P
 	}
 	else if (this.controller == 1)
 	{
@@ -102,6 +108,10 @@ Player.prototype.update = function update(dt)
 			this.x += 360 * dt;
 		}
 	}
+	
+	
+	
+	
 	
 	this.yVelocity += this.gravity;
 	this.y += this.yVelocity * dt;

@@ -37,12 +37,33 @@ app.drawLib = {
 		ctx.strokeText(string,x,y);
 		ctx.restore();
 	},
-	
+	outRect : function(ctx, x, y, w, h, col, out)
+	{
+		ctx.save();
+		
+		ctx.fillStyle = col;
+		ctx.strokeStyle = out;
+		ctx.lineWidth = 5;
+		ctx.fillRect(x,y,w,h);
+		ctx.strokeRect(x,y,w,h);
+		ctx.restore();
+	},
 	backgroundGradient : function(ctx, width, height)
 	{
 		ctx.save();
 		ctx.fillStyle = "rgba(0.0,0.0,0.0,0.0)";
 		ctx.fillRect(0,0,width,height) //what's the point of the rect function if we're just going to do this?
 		ctx.restore();
-	}
+	},
+	Shadowrect : function(ctx, x, y, w, h, col)
+	{
+		ctx.save();
+		ctx.shadowOffsetX = 0;
+		ctx.shadowOffsetY = 5;
+		ctx.shadowBlur = 10;
+		ctx.shadowColor ="#000"
+		ctx.fillStyle = col;
+		ctx.fillRect(x,y,w,h);
+		ctx.restore();
+	},
 };

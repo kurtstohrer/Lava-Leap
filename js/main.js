@@ -22,13 +22,14 @@ app.main = {
     canvas: undefined,
     ctx: undefined,
 	players: [],
-	colors: ["green", "red", "blue", "black"],
+	colors: ["green", "red", "blue", "purple"],
 	platforms1: [],
 	platforms2: [],
 	startPlatform: undefined,
-	gamestate: "GAME",
+	gamestate: undefined,
 	ticks: 0,
 	speed: 150,
+	drawLib:undefined,
     
     // methods
 	init : function() {
@@ -40,11 +41,13 @@ app.main = {
 		
 		this.ctx.textAlign = 'center';
 		
+		this.drawLib= app.drawLib;
+		
 		//get connected gamepads
 		var pad = navigator.getGamepads();
 		
 		//loop through and create a player for each gamepad
-		for(var i = 0; i < 2; i++)
+		for(var i = 0; i < 4; i++)
 		{
 			this.players.push(new Player((this.WIDTH/4)*(i+1)-240, 500, this.colors[i], i));
 		}
@@ -56,6 +59,7 @@ app.main = {
 			}
 		}
 		
+		console.log(navigator.getGamepads());
 		var pwidth = Math.random() * 300 + 100;
 		var px = Math.random() * (this.WIDTH - pwidth);
 		this.platforms1.push(new app.Platform(pwidth, px));
@@ -66,11 +70,61 @@ app.main = {
 		this.startPlatform = new app.Platform(this.WIDTH, 0);
 		this.startPlatform.y = this.HEIGHT * 3/5;
 			
+		this.gamestate = "Main";
 		this.update();
 	},
 		
 	draw: function()
 	{
+			var width = this.WIDTH;
+			var height = this.HEIGHT;
+		var pad = navigator.getGamepads();
+		
+		if(this.gamestate == "Main"){
+		
+			//player1
+			if(pad[0] != undefined ){
+				this.drawLib.outRect(this.ctx,0,0,width/4,height,'#063B08','#000F01');
+				this.drawLib.text(this.ctx,'1',100,220,300,'#00E604');
+			}
+			else{
+				this.drawLib.outRect(this.ctx,0,0,width/4,height,'#595959','#2E2E2E');
+				this.drawLib.text(this.ctx,'1',100,220,300,'#878787');
+			}
+			//player2
+			if(pad[1] != undefined){
+				this.drawLib.outRect(this.ctx,width/4,0,width/4,height,'#730000','#380D0D');
+				this.drawLib.text(this.ctx,'2',width/4 +100,220,300,'#FF0000');
+			}
+			else{
+				this.drawLib.outRect(this.ctx,width/4,0,width/4,height,'#595959','#2E2E2E');
+				this.drawLib.text(this.ctx,'2',width/4 +100,220,300,'#878787');
+			}
+			//player3
+			if(pad[2] != undefined){
+				this.drawLib.outRect(this.ctx,width/2,0,width/4,height,'blue','#000012');
+				this.drawLib.text(this.ctx,'3',width/2 +100,220,300,'#5258F2');
+			}
+			else{
+				this.drawLib.outRect(this.ctx,width/2,0,width/4,height,'#595959','#2E2E2E');
+				this.drawLib.text(this.ctx,'3',width/2 +100,220,300,'#878787');
+			} 
+			//player4
+			if(pad[3] != undefined){
+				this.drawLib.outRect(this.ctx,width - width/4,0,width/4,height,'purple','#120011');
+				this.drawLib.text(this.ctx,'4',width - width/4 +100,220,300,'#FA6EF8');
+			}
+			else{
+				this.drawLib.outRect(this.ctx,width - width/4,0,width/4,height,'#595959','#2E2E2E');
+				this.drawLib.text(this.ctx,'4',width - width/4 +100,220,300,'#878787');
+			}
+			
+			if(pad[0] != undefined){
+				this.drawLib.Shadowrect(this.ctx,0,height/2 + 100,width,100, '#fff');
+				this.drawLib.text(this.ctx,"Press any button on your controller to join and  [p] to Play!",width/2, height/2 + 165, 50, '#000');
+			}
+		
+		}
 		if(this.gamestate == "GAME"){
 		
 			this.ctx.save();
@@ -174,7 +228,16 @@ app.main = {
 	{
 		requestAnimationFrame(this.update.bind(this));
 		
-		if(this.gamestate == "GAME")
+		if(this.gamestate == "Main"){
+			if(app.keydown[80]){
+				this.gamestate = "GAME";
+				
+				console.log(this.gamestate);
+			}
+		
+		}
+		
+		if(this.gamestate == "GAME" )
 		{
 			//loop through and update the players
 			this.ticks++;
