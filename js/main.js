@@ -45,19 +45,30 @@ app.main = {
 		
 		//get connected gamepads
 		var pad = navigator.getGamepads();
+		var numPlayers = 0;
+		{
+			for(var i = 0; i < pad.length; i++){
+			
+				if(pad[i] != undefined)
+				{
+					numPlayers += 1;
+				}
+			}
+		}
+		if(numPlayers < 2) numPlayers = 2;
 		
 		//loop through and create a player for each gamepad
-		for(var i = 0; i < 4; i++)
+		for(var i = 0; i < numPlayers; i++)
 		{
-			this.players.push(new Player((this.WIDTH/4)*(i+1)-240, 500, this.colors[i], i));
+			this.players.push(new Player(this.WIDTH * (i+1)/(numPlayers+1), 500, this.colors[i], i));
 		}
-		for(var i = 2; i < pad.length; i++){
+		/*for(var i = 2; i < numPlayers; i++){
 			
 			if(pad[i] != undefined){
 			
-				this.players.push(new Player((this.WIDTH/4)*(i+1)-240, 500, this.colors[i], i));
+				this.players.push(new Player(this.WIDTH * (i+1)/(numPlayers+!), 500, this.colors[i], i));
 			}
-		}
+		}*/
 		
 		console.log(navigator.getGamepads());
 		var pwidth = Math.random() * 300 + 100;
@@ -90,6 +101,14 @@ app.main = {
 			else{
 				this.drawLib.outRect(this.ctx,0,0,width/4,height,'#595959','#2E2E2E');
 				this.drawLib.text(this.ctx,'1',100,220,300,'#878787');
+				this.drawLib.rect(this.ctx, width/8 - 37.5, 450, 75, 75, '#878787');
+				this.drawLib.rect(this.ctx, width/8 - 37.5, 526, 75, 75, '#878787');
+				this.drawLib.rect(this.ctx, width/8 - 113.5, 526, 75, 75, '#878787');
+				this.drawLib.rect(this.ctx, width/8 + 38.5, 526, 75, 75, '#878787');
+				this.drawLib.text(this.ctx,'W',width/8,500,50,'#000000');
+				this.drawLib.text(this.ctx,'S',width/8,576,50,'#000000');
+				this.drawLib.text(this.ctx,'A',width/8 - 76,576,50,'#000000');
+				this.drawLib.text(this.ctx,'D',width/8 + 76,576,50,'#000000');
 			}
 			//player2
 			if(pad[1] != undefined){
@@ -99,6 +118,10 @@ app.main = {
 			else{
 				this.drawLib.outRect(this.ctx,width/4,0,width/4,height,'#595959','#2E2E2E');
 				this.drawLib.text(this.ctx,'2',width/4 +100,220,300,'#878787');
+				this.drawLib.rect(this.ctx, width*3/8 - 37.5, 450, 75, 75, '#878787');
+				this.drawLib.rect(this.ctx, width*3/8 - 37.5, 526, 75, 75, '#878787');
+				this.drawLib.rect(this.ctx, width*3/8 - 113.5, 526, 75, 75, '#878787');
+				this.drawLib.rect(this.ctx, width*3/8 + 38.5, 526, 75, 75, '#878787');
 			}
 			//player3
 			if(pad[2] != undefined){
@@ -294,7 +317,7 @@ app.main = {
 			}
 			if(highest1 > this.PLATFORM_DIFFERENCE)//this.PLATFORM_DIFFERENCE = 200
 			{
-				var pwidth = Math.random() * 300 + 100;
+				var pwidth = Math.random() * 200 + 100;
 				var px = Math.random() * 1200 + this.platforms1[highest1index].x - 600;
 				if(px + pwidth > this.WIDTH)
 				{
@@ -309,7 +332,7 @@ app.main = {
 			}
 			if(highest2 > this.PLATFORM_DIFFERENCE)//this.PLATFORM_DIFFERENCE = 200
 			{
-				var pwidth = Math.random() * 300 + 100;
+				var pwidth = Math.random() * 200 + 100;
 				var px = Math.random() * 1200 + this.platforms2[highest2index].x - 600;
 				if(px + pwidth > this.WIDTH)
 				{
@@ -332,6 +355,22 @@ app.main = {
 			});
 			//console.log(this.platforms1.length + " " + this.platforms2.length);
 		}//END gamestate = "GAME"
+		
+		var numactive = 0;
+		var winner = -1;
+		for(var i = 0; i < this.players.length; i++)
+		{
+			if(this.players[i].active)
+			{
+				numactive+=1;
+				winner = i;
+			}
+		}
+		if(numactive == 1)
+		{
+			window.alert("Player " + (winner + 1) + " Wins!");
+			location.reload();
+		}
 		
 		this.checkCollosions()
 		this.draw();
