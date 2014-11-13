@@ -297,7 +297,7 @@ app.main = {
 				}
 			}
 		
-			if(this.platforms1[0].y + this.PLATFORM_DIFFERENCE * 2/3 > this.startPlatform.y && this.startPlatform.active)
+			if(this.platforms1[0].y + this.PLATFORM_DIFFERENCE > this.startPlatform.y && this.startPlatform.active)
 			{
 				this.startPlatform.update(this.dt, this.speed);
 			}
@@ -378,6 +378,11 @@ app.main = {
 		if(numactive == 1)
 		{
 			window.alert("Player " + (winner + 1) + " Wins!");
+			location.reload();
+		}
+		if(numactive == 0)
+		{
+			window.alert("You all lose");
 			location.reload();
 		}
 		
