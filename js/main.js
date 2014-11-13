@@ -46,13 +46,11 @@ app.main = {
 		//get connected gamepads
 		var pad = navigator.getGamepads();
 		var numPlayers = 0;
+		for(var i = 0; i < pad.length; i++)
 		{
-			for(var i = 0; i < pad.length; i++){
-			
-				if(pad[i] != undefined)
-				{
-					numPlayers += 1;
-				}
+			if(pad[i] != undefined)
+			{
+				numPlayers += 1;
 			}
 		}
 		if(numPlayers < 2) numPlayers = 2;
@@ -105,10 +103,13 @@ app.main = {
 				this.drawLib.rect(this.ctx, width/8 - 37.5, 526, 75, 75, '#878787');
 				this.drawLib.rect(this.ctx, width/8 - 113.5, 526, 75, 75, '#878787');
 				this.drawLib.rect(this.ctx, width/8 + 38.5, 526, 75, 75, '#878787');
-				this.drawLib.text(this.ctx,'W',width/8,500,50,'#000000');
-				this.drawLib.text(this.ctx,'S',width/8,576,50,'#000000');
-				this.drawLib.text(this.ctx,'A',width/8 - 76,576,50,'#000000');
-				this.drawLib.text(this.ctx,'D',width/8 + 76,576,50,'#000000');
+				this.drawLib.text(this.ctx,'W',width/8,495,50,'#000000');
+				this.drawLib.text(this.ctx,'Jump',width/8,515,20,'#000000');
+				this.drawLib.text(this.ctx,'S',width/8,571,50,'#000000');
+				this.drawLib.text(this.ctx,'A',width/8 - 76,571,50,'#000000');
+				this.drawLib.text(this.ctx,'Left',width/8 - 76,591,20,'#000000');
+				this.drawLib.text(this.ctx,'D',width/8 + 76,571,50,'#000000');
+				this.drawLib.text(this.ctx,'Right',width/8 + 76,591,20,'#000000');
 			}
 			//player2
 			if(pad[1] != undefined){
@@ -122,6 +123,14 @@ app.main = {
 				this.drawLib.rect(this.ctx, width*3/8 - 37.5, 526, 75, 75, '#878787');
 				this.drawLib.rect(this.ctx, width*3/8 - 113.5, 526, 75, 75, '#878787');
 				this.drawLib.rect(this.ctx, width*3/8 + 38.5, 526, 75, 75, '#878787');
+				this.drawLib.text(this.ctx,'8',width*3/8,495,50,'#000000');
+				this.drawLib.text(this.ctx,'Jump',width*3/8,515,20,'#000000');
+				this.drawLib.text(this.ctx,'5',width*3/8,571,50,'#000000');
+				this.drawLib.text(this.ctx,'4',width*3/8 - 76,571,50,'#000000');
+				this.drawLib.text(this.ctx,'Left',width*3/8 - 76,591,20,'#000000');
+				this.drawLib.text(this.ctx,'6',width*3/8 + 76,571,50,'#000000');
+				this.drawLib.text(this.ctx,'Right',width*3/8 + 76,591,20,'#000000');
+				this.drawLib.text(this.ctx,'(make sure NUM LOCK is on)',width*3/8,625,25,'#000000');
 			}
 			//player3
 			if(pad[2] != undefined){
