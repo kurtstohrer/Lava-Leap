@@ -32,6 +32,8 @@ app.main = {
 	ticks: 0,
 	speed: 150,
 	drawLib:undefined,
+	
+	platformImage: undefined,
     
     // methods
 	init : function() {
@@ -62,6 +64,7 @@ app.main = {
 		{
 			this.players.push(new Player(this.WIDTH * (i+1)/(numPlayers+1), 500, this.colors[i], i));
 		}
+		
 		/*for(var i = 2; i < numPlayers; i++){
 			
 			if(pad[i] != undefined){
@@ -70,17 +73,20 @@ app.main = {
 			}
 		}*/
 		
+		this.platformImage = new Image();
+		this.platformImage.src = "img/lavatile.png";
+		
 		console.log(navigator.getGamepads());
 		this.platformArrays.push(this.platforms1);
 		this.platformArrays.push(this.platforms2);
 		this.platformArrays.push(this.platforms3);
 		for(var i = 0; i < this.platformArrays.length; i++)
 		{
-			var pwidth = Math.random() * 200 + 75;
+			var pwidth = 32 * Math.floor(Math.random() * 9 + 2);
 			var px = Math.random() * (this.WIDTH - pwidth);
-			this.platformArrays[i].push(new app.Platform(pwidth, px));
+			this.platformArrays[i].push(new app.Platform(pwidth, px, this.platformImage));
 		}
-		this.startPlatform = new app.Platform(this.WIDTH, 0);
+		this.startPlatform = new app.Platform(this.WIDTH, 0, this.platformImage);
 		this.startPlatform.y = this.HEIGHT * 3/5;
 			
 		this.gamestate = "Main";
@@ -337,8 +343,8 @@ app.main = {
 				}
 				if(highest > this.PLATFORM_DIFFERENCE)//this.PLATFORM_DIFFERENCE = 200
 				{
-					var pwidth = Math.random() * 200 + 75;
-					var px = Math.random() * 1000 + platforms[highestindex].x - 500;
+					var pwidth = 32 * Math.floor(Math.random() * 9 + 2);
+					var px = Math.random() * 800 + platforms[highestindex].x - 400;
 					if(px + pwidth > this.WIDTH)
 					{
 						var diff =  px + pwidth - this.WIDTH;
@@ -348,7 +354,7 @@ app.main = {
 					{
 						px = -px;
 					}
-					platforms.push(new app.Platform(pwidth, px));
+					platforms.push(new app.Platform(pwidth, px, this.platformImage));
 				}
 				platforms = platforms.filter(function(platform)
 				{

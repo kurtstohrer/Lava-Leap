@@ -33,12 +33,12 @@ app.Platform = function()
 	{
 		
 	
-		ctx.save();
-		ctx.fillStyle = "black";
-		ctx.fillRect(this.x, this.y, this.width, this.height);
-		ctx.restore();
+		//ctx.save();
+		//ctx.fillStyle = "black";
+		//ctx.fillRect(this.x, this.y, this.width, this.height);
+		//ctx.restore();
 		
-		for(var i = 0; i < this.width - 32; i+=32){
+		for(var i = 0; i < this.width; i+=32){
 			
 			ctx.save();
 			ctx.drawImage(this.img, this.x + i, this.y);

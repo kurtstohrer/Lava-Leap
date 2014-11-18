@@ -75,11 +75,11 @@ Player.prototype.update = function update(dt)
 		{
 			if(this.canJump)
 			{
-				this.yVelocity = -600;
+				this.yVelocity = -900;
 			}
 			else
 			{
-				this.yVelocity -= this.gravity - 15;
+				this.yVelocity -= this.gravity - 30;
 			}
 		}
 		else
