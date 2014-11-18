@@ -6,13 +6,14 @@ var app = app || {};
 
 app.Platform = function()
 {
-	function Platform(width, x)
+	function Platform(width, x, image)
 	{
 		this.height = 5;
 		this.width = width;
 		this.x = x; //point (x,y) is top left of platform, make sure platform generation is consistent with that
 		this.y = -this.height;
 		this.active = true;
+		this.img = image;
 	}
 	
 	var p = Platform.prototype;
@@ -30,10 +31,19 @@ app.Platform = function()
 	
 	p.draw = function(ctx)
 	{
+		
+	
 		ctx.save();
 		ctx.fillStyle = "black";
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 		ctx.restore();
+		
+		for(var i = 0; i < this.width - 32; i+=32){
+			
+			ctx.save();
+			ctx.drawImage(this.img, this.x + i, this.y);
+			ctx.restore();
+		}
 	};
 	
 	p.draw2 = function(ctx, num)//temp function to differentiate platforms
