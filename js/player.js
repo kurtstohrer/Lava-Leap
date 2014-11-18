@@ -15,7 +15,7 @@ var Player = function Player(x, y, color, controls){
 	this.yVelocity = 10;
 	this.maxVelocity = 6;
 	this.controller = controls;
-	this.gravity = 20;
+	this.gravity = 40;
 	this.ground = 300;
 	this.width = 32;
 	this.height = 32;
@@ -79,7 +79,7 @@ Player.prototype.update = function update(dt)
 			}
 			else
 			{
-				this.yVelocity -= 5;
+				this.yVelocity -= this.gravity - 15;
 			}
 		}
 		else
@@ -109,6 +109,14 @@ Player.prototype.update = function update(dt)
 			{
 				this.x += 360 * dt;
 			}
+		}
+		if(this.x < 0)
+		{
+			this.x = 0;
+		}
+		if(this.x > 1920 - this.height)
+		{
+			this.x = 1920 - this.height
 		}
 		
 		this.yVelocity += this.gravity;

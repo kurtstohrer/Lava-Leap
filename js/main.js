@@ -25,6 +25,8 @@ app.main = {
 	colors: ["green", "red", "blue", "purple"],
 	platforms1: [],
 	platforms2: [],
+	platforms3: [],
+	platformArrays: [],
 	startPlatform: undefined,
 	gamestate: undefined,
 	ticks: 0,
@@ -69,13 +71,15 @@ app.main = {
 		}*/
 		
 		console.log(navigator.getGamepads());
-		var pwidth = Math.random() * 300 + 100;
-		var px = Math.random() * (this.WIDTH - pwidth);
-		this.platforms1.push(new app.Platform(pwidth, px));
-		pwidth = Math.random() * 300 + 100;
-		px = Math.random() * (this.WIDTH - pwidth);
-		this.platforms2.push(new app.Platform(pwidth, px));
-		
+		this.platformArrays.push(this.platforms1);
+		this.platformArrays.push(this.platforms2);
+		this.platformArrays.push(this.platforms3);
+		for(var i = 0; i < this.platformArrays.length; i++)
+		{
+			var pwidth = Math.random() * 200 + 75;
+			var px = Math.random() * (this.WIDTH - pwidth);
+			this.platformArrays[i].push(new app.Platform(pwidth, px));
+		}
 		this.startPlatform = new app.Platform(this.WIDTH, 0);
 		this.startPlatform.y = this.HEIGHT * 3/5;
 			
@@ -167,13 +171,13 @@ app.main = {
 			{
 				this.startPlatform.draw(this.ctx);
 			}
-			for(var i = 0; i < this.platforms1.length; i++)
+			for(var j = 0; j < this.platformArrays.length; j++)
 			{
-				this.platforms1[i].draw(this.ctx, 1);
-			}
-			for(var i = 0; i < this.platforms2.length; i++)
-			{
-				this.platforms2[i].draw(this.ctx);
+				var platforms = this.platformArrays[j];
+				for(var i = 0; i < platforms.length; i++)
+				{
+					platforms[i].draw(this.ctx, 1);
+				}
 			}
 			//loop through and draw the players
 			for(var i = 0; i < this.players.length; i++){
@@ -189,46 +193,29 @@ app.main = {
 		{
 			var player = this.players[i];
 			player.canJump =  false;
-			for(var j = 0; j < this.platforms1.length; j++)
+			for(var j = 0; j < this.platformArrays.length; j++)
 			{
-				var platform = this.platforms1[j];
-				if(player.y + player.height >= platform.y && player.prevy + player.height <= platform.y)
+				var platforms = this.platformArrays[j];
+				for(var k = 0; k < platforms.length; k++)
 				{
-					//console.log("110");
-					var xdiff = player.x - player.prevx;
-					var ydiff = player.y - player.prevy;
-					var pct = (platform.y - player.prevy) / ydiff;
-					//if((player.x + (pct * xdiff) >= platform.x && player.x + (pct * xdiff) <= platform.x + platform.width) ||
-					//	(player.x + player.width + (pct * xdiff) >= platform.x && player.x + player.width + (pct * xdiff) <= platform.x + platform.width))
-					if((player.x >= platform.x && player.x <= platform.x + platform.width) ||
-						(player.x + player.width >= platform.x && player.x + player.width <= platform.x + platform.width))
+					var platform = platforms[k];
+					if(player.y + player.height >= platform.y && player.prevy + player.height <= platform.y)
 					{
-						//player.x = player.prevx + pct * xdiff;
-						player.y = player.prevy - player.height + pct * ydiff;
-						player.yVelocity = this.speed;
-						player.canJump = true;
-						player.canHoldJump = true;
-					}
-				}
-			}
-			for(var j = 0; j < this.platforms2.length; j++)
-			{
-				var platform = this.platforms2[j];
-				if(player.y + player.height >= platform.y && player.prevy + player.height <= platform.y)
-				{
-					var xdiff = player.x - player.prevx;
-					var ydiff = player.y - player.prevy;
-					var pct = (platform.y - player.prevy) / ydiff;
-					//if((player.x + (pct * xdiff) >= platform.x && player.x + (pct * xdiff) <= platform.x + platform.width) ||
-					//	(player.x + player.width + (pct * xdiff) >= platform.x && player.x + player.width + (pct * xdiff) <= platform.x + platform.width))
-					if((player.x >= platform.x && player.x <= platform.x + platform.width) ||
-						(player.x + player.width >= platform.x && player.x + player.width <= platform.x + platform.width))
-					{
-						//player.x = player.prevx + pct * xdiff;
-						player.y = player.prevy - player.height + pct * ydiff;
-						player.yVelocity = this.speed;
-						player.canJump = true;
-						player.canHoldJump = true;
+						//console.log("110");
+						var xdiff = player.x - player.prevx;
+						var ydiff = player.y - player.prevy;
+						var pct = (platform.y - player.prevy) / ydiff;
+						//if((player.x + (pct * xdiff) >= platform.x && player.x + (pct * xdiff) <= platform.x + platform.width) ||
+						//	(player.x + player.width + (pct * xdiff) >= platform.x && player.x + player.width + (pct * xdiff) <= platform.x + platform.width))
+						if((player.x >= platform.x && player.x <= platform.x + platform.width) ||
+							(player.x + player.width >= platform.x && player.x + player.width <= platform.x + platform.width))
+						{
+							//player.x = player.prevx + pct * xdiff;
+							player.y = player.prevy - player.height + pct * ydiff;
+							player.yVelocity = this.speed;
+							player.canJump = true;
+							player.canHoldJump = true;
+						}
 					}
 				}
 			}
@@ -250,6 +237,38 @@ app.main = {
 						player.yVelocity = this.speed;
 						player.canJump = true;
 						player.canHoldJump = true;
+					}
+				}
+			}
+			for(var j = 0; j < this.players.length; j++)
+			{
+				var player2 = this.players[j];
+				if(player != player2)
+				{
+					if(player.y + player.height >= player2.y && player.prevy + player.height <= player2.prevy)
+					{
+						var xdiff = player.x - player.prevx;
+						var ydiff = player.y - player.prevy;
+						var pct = (player2.y - player.prevy) / ydiff;
+						if((player.x >= player2.x && player.x <= player2.x + player2.width) ||
+							(player.x + player.width >= player2.x && player.x + player.width <= player2.x + player2.width))
+						{
+							player.yVelocity = -800;
+							player2.yVelocity = 800;
+						}
+					}
+					if(player.x + player.width >= player2.x && player.prevx + player.width <= player2.prevx)
+					{
+						var xdiff = player.x - player.prevx;
+						var ydiff = player.y - player.prevy;
+						var pct = (player2.y - player.prevy) / ydiff;
+						if((player.y >= player2.y && player.y <= player2.y + player2.height) ||
+							(player.y + player.height >= player2.y && player.y + player.height <= player2.y + player2.height))
+						{
+							player.x = player2.x - player.width;
+							player.xVelocity = 0;
+							player2.xVelocity = 0;
+						}
 					}
 				}
 			}
@@ -282,13 +301,13 @@ app.main = {
 					{
 						this.players[j].y += 1;
 					}
-					for(var j = 0; j < this.platforms1.length; j++)
+					for(var j = 0; j < this.platformArrays.length; j++)
 					{
-						this.platforms1[j].y += 1;
-					}
-					for(var j = 0; j < this.platforms2.length; j++)
-					{
-						this.platforms2[j].y += 1;
+						var platforms = this.platformArrays[j];
+						for(var k = 0; k < platforms.length; k++)
+						{
+							platforms[k].y += 1;
+						}
 					}
 					if(this.startPlatform.active)
 					{
@@ -301,67 +320,41 @@ app.main = {
 			{
 				this.startPlatform.update(this.dt, this.speed);
 			}
-			
-			var highest1 = this.HEIGHT;
-			var highest1index = 0;
-			var highest2 = this.HEIGHT;
-			var highest2index = 0;
-			for(var i = 0; i < this.platforms1.length; i++)
+
+			for(var j = 0; j < this.platformArrays.length; j++)
 			{
-				if(highest1 > this.platforms1[i].y)
+				var platforms = this.platformArrays[j];
+				var highest = this.HEIGHT;
+				var highestindex = 0;
+				for(var i = 0; i < platforms.length; i++)
 				{
-					highest1 = this.platforms1[i].y;
-					highest1index = i;
+					if(highest > platforms[i].y)
+					{
+						highest = platforms[i].y;
+						highestindex = i;
+					}
+					platforms[i].update(this.dt, this.speed);
 				}
-				this.platforms1[i].update(this.dt, this.speed);
+				if(highest > this.PLATFORM_DIFFERENCE)//this.PLATFORM_DIFFERENCE = 200
+				{
+					var pwidth = Math.random() * 200 + 75;
+					var px = Math.random() * 1000 + platforms[highestindex].x - 500;
+					if(px + pwidth > this.WIDTH)
+					{
+						var diff =  px + pwidth - this.WIDTH;
+						px -= 2 * diff;
+					}
+					if(px < 0)
+					{
+						px = -px;
+					}
+					platforms.push(new app.Platform(pwidth, px));
+				}
+				platforms = platforms.filter(function(platform)
+				{
+					return platform.active;
+				});
 			}
-			for(var i = 0; i < this.platforms2.length; i++)
-			{
-				if(highest2 > this.platforms2[i].y)
-				{
-					highest2 = this.platforms2[i].y;
-					highest2index = i;
-				}
-				this.platforms2[i].update(this.dt, this.speed);
-			}
-			if(highest1 > this.PLATFORM_DIFFERENCE)//this.PLATFORM_DIFFERENCE = 200
-			{
-				var pwidth = Math.random() * 200 + 100;
-				var px = Math.random() * 1200 + this.platforms1[highest1index].x - 600;
-				if(px + pwidth > this.WIDTH)
-				{
-					var diff =  px + pwidth - this.WIDTH;
-					px -= 2 * diff;
-				}
-				if(px < 0)
-				{
-					px = -px;
-				}
-				this.platforms1.push(new app.Platform(pwidth, px));
-			}
-			if(highest2 > this.PLATFORM_DIFFERENCE)//this.PLATFORM_DIFFERENCE = 200
-			{
-				var pwidth = Math.random() * 200 + 100;
-				var px = Math.random() * 1200 + this.platforms2[highest2index].x - 600;
-				if(px + pwidth > this.WIDTH)
-				{
-					var diff =  px + pwidth - this.WIDTH;
-					px -= 2 * diff;
-				}
-				if(px < 0)
-				{
-					px = -px;
-				}
-				this.platforms2.push(new app.Platform(pwidth, px));
-			}
-			this.platforms1 = this.platforms1.filter(function(platform)
-			{
-				return platform.active;
-			});
-			this.platforms2 = this.platforms2.filter(function(platform)
-			{
-				return platform.active;
-			});
 			//console.log(this.platforms1.length + " " + this.platforms2.length);
 		}//END gamestate = "GAME"
 		
