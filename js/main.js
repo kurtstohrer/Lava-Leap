@@ -191,6 +191,34 @@ app.main = {
 				this.players[i].draw(this.ctx);
 			}
 		}
+		if(this.gamestate == "END"){
+		
+			this.ctx.fillStyle = "#000";
+			this.ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+			
+			var numactive = 0;
+			var winner = -1;
+			for(var i = 0; i < this.players.length; i++)
+			{
+				if(this.players[i].active)
+				{
+					numactive+=1;
+					winner = i;
+				}
+			}
+			var winMess = "Player " + (winner + 1) + " Wins!";
+			
+			if(numactive == 1){
+					this.drawLib.text(this.ctx,winMess,width/2, 300, 100, '#fff');
+			}
+			if(numactive == 0)
+			{
+				this.drawLib.text(this.ctx,"Your all bad at this!",width/2, 300, 100, '#fff');
+			}
+					this.drawLib.text(this.ctx,"Press [p] to play again",width/2, 600, 80, '#fff');
+			
+		
+		}
 	},
 	
 	checkCollosions: function()
@@ -289,7 +317,7 @@ app.main = {
 			if(app.keydown[80]){
 				this.gamestate = "GAME";
 				
-				console.log(this.gamestate);
+				
 			}
 		
 		}
@@ -374,15 +402,18 @@ app.main = {
 				winner = i;
 			}
 		}
-		if(numactive == 1)
+		if(numactive <= 1)
 		{
-			window.alert("Player " + (winner + 1) + " Wins!");
-			location.reload();
+			this.gamestate = "END";
 		}
-		if(numactive == 0)
-		{
-			window.alert("You all lose");
-			location.reload();
+		
+		if(this.gamestate == "END"){
+			if(app.keydown[80]){
+				location.reload();
+				
+				
+			}
+		
 		}
 		
 		this.checkCollosions()
