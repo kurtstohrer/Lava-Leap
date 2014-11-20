@@ -456,6 +456,12 @@ app.main = {
 				{
 					var pwidth = 32 * Math.floor(Math.random() * 9 + 2);
 					var px = Math.random() * 800 + platforms[highestindex].x - 400;
+					var randType = Math.random();
+					var typeIndex = 0;
+					if(randType < 0.10)
+					{
+						typeIndex = 2;
+					}
 					if(px + pwidth > this.WIDTH)
 					{
 						var diff =  px + pwidth - this.WIDTH;
@@ -465,7 +471,7 @@ app.main = {
 					{
 						px = -px;
 					}
-					platforms.push(new app.Platform(pwidth, px, this.platformImage, this.platformTypes[0]));
+					platforms.push(new app.Platform(pwidth, px, this.platformImage, this.platformTypes[typeIndex]));
 				}
 				platforms = platforms.filter(function(platform)
 				{
