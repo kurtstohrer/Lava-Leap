@@ -22,7 +22,7 @@ var Player = function Player(x, y, color, controls){
 	this.canJump = false;
 	this.canHoldJump = false;
 	this.active = true;
-	this.platformType = "normal";
+	this.platform = null;
 }
 
 //update
@@ -75,7 +75,7 @@ Player.prototype.update = function update(dt)
 		//EDIT - CHAD
 		//added control based on what platform the player is currently on
 			
-		if(this.platformType == "tramp" && this.canJump)
+		if(this.platform.type == "tramp" && this.canJump)
 		{
 			this.yVelocity = Math.sqrt(this.y - 200) * -65;
 			this.canJump = false;
@@ -95,7 +95,7 @@ Player.prototype.update = function update(dt)
 			}
 			//EDIT - CHAD
 			//reset platform type when players jump to resume normal movement
-			this.platformType = "normal";
+			this.platform = null;
 		}
 		else
 		{
@@ -106,7 +106,7 @@ Player.prototype.update = function update(dt)
 		//if the left D-pad is pressed of the left stick moved left, go left and limit the speed
 		if(left)
 		{
-			if(this.platformType == "slow"){
+			if(this.platform.type == "slow"){
 				
 				this.x -= 160 * dt;
 			}
@@ -116,7 +116,7 @@ Player.prototype.update = function update(dt)
 		//if the righ D-pad is pressed of the left stick moved right, go right and limit the speed
 		if(right)
 		{
-			if(this.platformType == "slow")
+			if(this.platform.type == "slow")
 			{
 				this.x += 160 * dt;
 			}
@@ -151,8 +151,8 @@ Player.prototype.draw = function draw(ctx)
 
 //BEGIN CHAD
 //assigns the current platform type the player is on
-Player.prototype.isOnPlatformType = function isOnPlatform(type){
+Player.prototype.isOnPlatform = function isOnPlatform(platform){
 	
-	this.platformType = type;
+	this.platform = platform;
 };
 //END CHAD
