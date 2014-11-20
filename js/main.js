@@ -321,7 +321,7 @@ app.main = {
 							player.yVelocity = this.speed;
 							player.canJump = true;
 							player.canHoldJump = true;
-							player.isOnPlatformType(platform.type);
+							player.isOnPlatform(platform);
 						}
 					}
 				}
@@ -344,7 +344,7 @@ app.main = {
 						player.yVelocity = this.speed;
 						player.canJump = true;
 						player.canHoldJump = true;
-						player.isOnPlatformType(platform.type);
+						player.isOnPlatform(platform);
 					}
 				}
 			}

@@ -75,7 +75,7 @@ Player.prototype.update = function update(dt)
 		//EDIT - CHAD
 		//added control based on what platform the player is currently on
 			
-		if(this.platform.type == "tramp" && this.canJump)
+		if(this.platform && this.platform.type == "tramp" && this.canJump)
 		{
 			this.yVelocity = Math.sqrt(this.y - 200) * -65;
 			this.canJump = false;
@@ -106,7 +106,7 @@ Player.prototype.update = function update(dt)
 		//if the left D-pad is pressed of the left stick moved left, go left and limit the speed
 		if(left)
 		{
-			if(this.platform.type == "slow"){
+			if(this.platform && this.platform.type == "slow"){
 				
 				this.x -= 160 * dt;
 			}
@@ -116,11 +116,16 @@ Player.prototype.update = function update(dt)
 		//if the righ D-pad is pressed of the left stick moved right, go right and limit the speed
 		if(right)
 		{
-			if(this.platform.type == "slow")
+			if(this.platform && this.platform.type == "slow")
 			{
 				this.x += 160 * dt;
 			}
 			else this.x += 480 * dt;
+		}
+		
+		if(this.platform && this.platform.type == "moving")
+		{
+			this.x += this.platform.xVelocity * dt;
 		}
 		
 		if(this.x < 0)

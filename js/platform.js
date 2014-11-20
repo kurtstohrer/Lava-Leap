@@ -35,7 +35,6 @@ app.Platform = function()
 	{
 		if(this.type == "moving")
 		{
-			this.x += this.xVelocity * dt;
 			if(this.x < 0)
 			{
 				this.x = 0;
@@ -46,6 +45,7 @@ app.Platform = function()
 				this.x = 1920 - this.width;
 				this.xVelocity *= -1;
 			}
+			this.x += this.xVelocity * dt;
 		}	
 		this.y += speed * dt;
 		this.active = this.active && this.y < 1080;
