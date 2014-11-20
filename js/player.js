@@ -22,6 +22,7 @@ var Player = function Player(x, y, color, controls){
 	this.canJump = false;
 	this.canHoldJump = false;
 	this.active = true;
+	this.platformType = "normal";
 }
 
 //update
@@ -70,9 +71,21 @@ Player.prototype.update = function update(dt)
 			right = app.keydown[102];//NUMPAD 6
 			start = app.keydown[80]; // P
 		}
+		
+		//EDIT - CHAD
+		//added control based on what platform the player is currently on
+			
+		if(this.platformType == "tramp"){
+		
+			this.yVelocity = -500;
+		}
 		//if the A button is pressed
-		if(jump && this.canHoldJump)
+		else if(jump && this.canHoldJump)
 		{
+			//EDIT - CHAD
+			//reset platform type when players jump to resume normal movement
+			this.platformType = "normal";
+			
 			if(this.canJump)
 			{
 				this.yVelocity = -900;
@@ -89,27 +102,50 @@ Player.prototype.update = function update(dt)
 		
 		//if the left D-pad is pressed of the left stick moved left, go left and limit the speed
 		if(left){
+		
 			if(run = false)
 			{
-				this.x -= 900 * dt;
+				//EDIT - CHAD
+				//edit movement when on a slow platform
+				if(this.platformType == "slow"){
+					
+					this.x -= 600 * dt;
+				}
+				else this.x -= 900 * dt;
 			}
 			else
 			{
-				this.x -= 360 * dt;
+				if(this.platformType == "slow"){
+					
+					this.x -= 160 * dt;
+				}
+				else this.x -= 360 * dt;
 			}
 		}
 		
 		//if the righ D-pad is pressed of the left stick moved right, go right and limit the speed
 		if(right){
+		
 			if(run = false)
 			{
-				this.x += 900 * dt;
+				//EDIT - CHAD
+				//edit movement when on a slow platform
+				if(this.platformType == "slow"){
+					
+					this.x += 600 * dt;
+				}
+				else this.x += 900 * dt;
 			}
 			else
 			{
-				this.x += 360 * dt;
+				if(this.platformType == "slow"){
+					
+					this.x += 160 * dt;
+				}
+				else this.x += 360 * dt;
 			}
 		}
+		
 		if(this.x < 0)
 		{
 			this.x = 0;
@@ -135,3 +171,11 @@ Player.prototype.draw = function draw(ctx)
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 };
+
+//BEGIN CHAD
+//assigns the current platform type the player is on
+Player.prototype.isOnPlatformType = function isOnPlatform(type){
+	
+	this.platformType = type;
+};
+//END CHAD

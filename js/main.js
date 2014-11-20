@@ -27,6 +27,7 @@ app.main = {
 	platforms2: [],
 	platforms3: [],
 	platformArrays: [],
+	platformTypes: ["normal", "slow", "tramp"],
 	startPlatform: undefined,
 	gamestate: undefined,
 	ticks: 0,
@@ -34,6 +35,8 @@ app.main = {
 	drawLib:undefined,
 	
 	platformImage: undefined,
+	backImage: undefined,
+	backSpeed:0,
     
     // methods
 	init : function() {
@@ -76,6 +79,9 @@ app.main = {
 		this.platformImage = new Image();
 		this.platformImage.src = "img/lavatile.png";
 		
+		this.backImage = new Image();
+		this.backImage.src = "img/largewalltile-scaled.png";
+		
 		console.log(navigator.getGamepads());
 		this.platformArrays.push(this.platforms1);
 		this.platformArrays.push(this.platforms2);
@@ -84,13 +90,57 @@ app.main = {
 		{
 			var pwidth = 32 * Math.floor(Math.random() * 9 + 2);
 			var px = Math.random() * (this.WIDTH - pwidth);
-			this.platformArrays[i].push(new app.Platform(pwidth, px, this.platformImage));
+			this.platformArrays[i].push(new app.Platform(pwidth, px, this.platformImage, this.platformTypes[0]));
 		}
-		this.startPlatform = new app.Platform(this.WIDTH, 0, this.platformImage);
+		this.startPlatform = new app.Platform(this.WIDTH, 0, this.platformImage, this.platformTypes[0]);
 		this.startPlatform.y = this.HEIGHT * 3/5;
 			
-		this.gamestate = "Main";
+		this.gamestate = "MAIN";
 		this.update();
+	},
+	
+	reset: function(){
+	
+		this.players = [];
+		this.platforms1 = [];
+		this.platforms2 = [];
+		this.platforms3 = [];
+		this.platformArrays = [];
+		this.ticks = 0;
+		this.backSpeed = 0;
+		this.speed = 150;
+		
+		//get connected gamepads
+		var pad = navigator.getGamepads();
+		var numPlayers = 0;
+		for(var i = 0; i < pad.length; i++)
+		{
+			if(pad[i] != undefined)
+			{
+				numPlayers += 1;
+			}
+		}
+		if(numPlayers < 2) numPlayers = 2;
+		
+		//loop through and create a player for each gamepad
+		for(var i = 0; i < numPlayers; i++)
+		{
+			this.players.push(new Player(this.WIDTH * (i+1)/(numPlayers+1), 500, this.colors[i], i));
+		}
+		
+		this.platformArrays.push(this.platforms1);
+		this.platformArrays.push(this.platforms2);
+		this.platformArrays.push(this.platforms3);
+		for(var i = 0; i < this.platformArrays.length; i++)
+		{
+			var pwidth = 32 * Math.floor(Math.random() * 9 + 2);
+			var px = Math.random() * (this.WIDTH - pwidth);
+			this.platformArrays[i].push(new app.Platform(pwidth, px, this.platformImage, this.platformTypes[0]));
+		}
+		this.startPlatform = new app.Platform(this.WIDTH, 0, this.platformImage, this.platformTypes[0]);
+		this.startPlatform.y = this.HEIGHT * 3/5;
+			
+		this.gamestate = "MAIN";
 	},
 		
 	draw: function()
@@ -99,12 +149,20 @@ app.main = {
 			var height = this.HEIGHT;
 		var pad = navigator.getGamepads();
 		
-		if(this.gamestate == "Main"){
+		if(this.gamestate == "MAIN"){
 		
 			//player1
 			if(pad[0] != undefined ){
 				this.drawLib.outRect(this.ctx,0,0,width/4,height,'#063B08','#000F01');
 				this.drawLib.text(this.ctx,'1',100,220,300,'#00E604');
+				
+				//BEGIN CHAD
+				//if the start button is pressed, change the gamestate
+				if(pad[0].buttons[9].pressed){
+					
+					this.gamestate = "GAME";
+				}
+				//END CHAD
 			}
 			else{
 				this.drawLib.outRect(this.ctx,0,0,width/4,height,'#595959','#2E2E2E');
@@ -125,6 +183,14 @@ app.main = {
 			if(pad[1] != undefined){
 				this.drawLib.outRect(this.ctx,width/4,0,width/4,height,'#730000','#380D0D');
 				this.drawLib.text(this.ctx,'2',width/4 +100,220,300,'#FF0000');
+				
+				//BEGIN CHAD
+				//if the start button is pressed, change the gamestate
+				if(pad[1].buttons[9].pressed){
+					
+					this.gamestate = "GAME";
+				}
+				//END CHAD
 			}
 			else{
 				this.drawLib.outRect(this.ctx,width/4,0,width/4,height,'#595959','#2E2E2E');
@@ -146,6 +212,14 @@ app.main = {
 			if(pad[2] != undefined){
 				this.drawLib.outRect(this.ctx,width/2,0,width/4,height,'blue','#000012');
 				this.drawLib.text(this.ctx,'3',width/2 +100,220,300,'#5258F2');
+				
+				//BEGIN CHAD
+				//if the start button is pressed, change the gamestate
+				if(pad[2].buttons[9].pressed){
+					
+					this.gamestate = "GAME";
+				}
+				//END CHAD
 			}
 			else{
 				this.drawLib.outRect(this.ctx,width/2,0,width/4,height,'#595959','#2E2E2E');
@@ -155,6 +229,14 @@ app.main = {
 			if(pad[3] != undefined){
 				this.drawLib.outRect(this.ctx,width - width/4,0,width/4,height,'purple','#120011');
 				this.drawLib.text(this.ctx,'4',width - width/4 +100,220,300,'#FA6EF8');
+				
+				//BEGIN CHAD
+				//if the start button is pressed, change the gamestate
+				if(pad[3].buttons[9].pressed){
+					
+					this.gamestate = "GAME";
+				}
+				//END CHAD
 			}
 			else{
 				this.drawLib.outRect(this.ctx,width - width/4,0,width/4,height,'#595959','#2E2E2E');
@@ -165,14 +247,33 @@ app.main = {
 				this.drawLib.Shadowrect(this.ctx,0,height/2 + 100,width,100, '#fff');
 				this.drawLib.text(this.ctx,"Press any button on your controller to join and  [p] to Play!",width/2, height/2 + 165, 50, '#000');
 			}
-		
+			
 		}
 		if(this.gamestate == "GAME"){
-		
-			this.ctx.save();
-			this.ctx.fillStyle = "white";
-			this.ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
-			this.ctx.restore();
+			
+			
+			//this.ctx.save();
+			//this.ctx.fillStyle = "white";
+			//this.ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+			//this.ctx.restore();
+			
+			
+			//BEGIN CHAD
+			//background scrolling
+			//if the background moves off screen, reset it
+			if(this.backspeed >= 1080){
+				
+				this.backspeed = 0;
+			}
+			
+			//update background pos
+			this.backSpeed += this.speed * this.dt;
+			
+			//draw backgrounds
+			this.ctx.drawImage(this.backImage, 0, this.backSpeed - 1080);
+			this.ctx.drawImage(this.backImage, 0, this.backSpeed);
+			//END CHAD
+			
 			if(this.startPlatform.active)
 			{
 				this.startPlatform.draw(this.ctx);
@@ -215,9 +316,8 @@ app.main = {
 			{
 				this.drawLib.text(this.ctx,"Your all bad at this!",width/2, 300, 100, '#fff');
 			}
-					this.drawLib.text(this.ctx,"Press [p] to play again",width/2, 600, 80, '#fff');
 			
-		
+			this.drawLib.text(this.ctx,"Press [spacebar] return to main menu",width/2, 600, 80, '#fff');
 		}
 	},
 	
@@ -249,6 +349,7 @@ app.main = {
 							player.yVelocity = this.speed;
 							player.canJump = true;
 							player.canHoldJump = true;
+							player.isOnPlatformType(platform.type);
 						}
 					}
 				}
@@ -271,6 +372,7 @@ app.main = {
 						player.yVelocity = this.speed;
 						player.canJump = true;
 						player.canHoldJump = true;
+						player.isOnPlatformType(platform.type);
 					}
 				}
 			}
@@ -313,11 +415,10 @@ app.main = {
 	{
 		requestAnimationFrame(this.update.bind(this));
 		
-		if(this.gamestate == "Main"){
+		if(this.gamestate == "MAIN"){
 			if(app.keydown[80]){
+			
 				this.gamestate = "GAME";
-				
-				
 			}
 		
 		}
@@ -382,7 +483,7 @@ app.main = {
 					{
 						px = -px;
 					}
-					platforms.push(new app.Platform(pwidth, px, this.platformImage));
+					platforms.push(new app.Platform(pwidth, px, this.platformImage, this.platformTypes[0]));
 				}
 				platforms = platforms.filter(function(platform)
 				{
@@ -408,10 +509,8 @@ app.main = {
 		}
 		
 		if(this.gamestate == "END"){
-			if(app.keydown[80]){
-				location.reload();
-				
-				
+			if(app.keydown[32]){
+				this.reset();
 			}
 		
 		}

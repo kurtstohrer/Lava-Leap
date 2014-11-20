@@ -6,7 +6,9 @@ var app = app || {};
 
 app.Platform = function()
 {
-	function Platform(width, x, image)
+	//EDIT - CHAD
+	//added a type for each platform
+	function Platform(width, x, image, type)
 	{
 		this.height = 5;
 		this.width = width;
@@ -14,6 +16,7 @@ app.Platform = function()
 		this.y = -this.height;
 		this.active = true;
 		this.img = image;
+		this.type = type;
 	}
 	
 	var p = Platform.prototype;
