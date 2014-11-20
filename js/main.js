@@ -261,9 +261,9 @@ app.main = {
 			//BEGIN CHAD
 			//background scrolling
 			//if the background moves off screen, reset it
-			if(this.backspeed >= 1080){
+			if(this.backSpeed >= 1080){
 				
-				this.backspeed = 0;
+				this.backSpeed = 0;
 			}
 			
 			//update background pos
@@ -272,6 +272,7 @@ app.main = {
 			//draw backgrounds
 			this.ctx.drawImage(this.backImage, 0, this.backSpeed - 1080);
 			this.ctx.drawImage(this.backImage, 0, this.backSpeed);
+			console.log(this.backSpeed);
 			//END CHAD
 			
 			if(this.startPlatform.active)
