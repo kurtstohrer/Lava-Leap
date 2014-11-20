@@ -17,6 +17,11 @@ app.Platform = function()
 		this.active = true;
 		this.img = image;
 		this.type = type;
+		this.xVelocity = Math.random() * 100 + 100;
+		if(Math.random() < 0.5)
+		{
+			this.xVelocity *= -1;
+		}
 	}
 	
 	var p = Platform.prototype;
@@ -28,6 +33,20 @@ app.Platform = function()
 	
 	p.update = function(dt, speed)
 	{
+		if(this.type == "moving")
+		{
+			this.x += this.xVelocity * dt;
+			if(this.x < 0)
+			{
+				this.x = 0;
+				this.xVelocity *= -1;
+			}
+			if(this.x > 1920 - this.width)
+			{
+				this.x = 1920 - this.width;
+				this.xVelocity *= -1;
+			}
+		}	
 		this.y += speed * dt;
 		this.active = this.active && this.y < 1080;
 	};

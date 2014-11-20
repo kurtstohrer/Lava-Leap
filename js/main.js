@@ -27,7 +27,7 @@ app.main = {
 	platforms2: [],
 	platforms3: [],
 	platformArrays: [],
-	platformTypes: ["normal", "slow", "tramp"],
+	platformTypes: ["normal", "slow", "tramp", "moving", "ghost"],
 	startPlatform: undefined,
 	gamestate: undefined,
 	ticks: 0,
@@ -461,6 +461,10 @@ app.main = {
 					if(randType < 0.10)
 					{
 						typeIndex = 2;
+					}
+					else if(randType < 0.30)
+					{
+						typeIndex = 3;
 					}
 					if(px + pwidth > this.WIDTH)
 					{
