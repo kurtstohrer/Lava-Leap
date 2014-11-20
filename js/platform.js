@@ -47,6 +47,13 @@ app.Platform = function()
 			ctx.drawImage(this.img, this.x + i, this.y);
 			ctx.restore();
 		}
+		if(this.type == "tramp")
+		{	
+			ctx.save();
+			ctx.fillStyle = "purple";
+			ctx.fillRect(this.x, this.y, this.width, this.height);
+			ctx.restore();
+		}
 	};
 	
 	p.draw2 = function(ctx, num)//temp function to differentiate platforms

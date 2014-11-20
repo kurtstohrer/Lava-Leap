@@ -75,16 +75,15 @@ Player.prototype.update = function update(dt)
 		//EDIT - CHAD
 		//added control based on what platform the player is currently on
 			
-		if(this.platformType == "tramp"){
-		
-			this.yVelocity = -500;
+		if(this.platformType == "tramp" && this.canJump)
+		{
+			this.yVelocity = Math.sqrt(this.y - 200) * -65;
+			this.canJump = false;
+			this.canHoldJump = false;
 		}
 		//if the A button is pressed
 		else if(jump && this.canHoldJump)
 		{
-			//EDIT - CHAD
-			//reset platform type when players jump to resume normal movement
-			this.platformType = "normal";
 			
 			if(this.canJump)
 			{
@@ -94,11 +93,15 @@ Player.prototype.update = function update(dt)
 			{
 				this.yVelocity -= this.gravity - 30;
 			}
+			//EDIT - CHAD
+			//reset platform type when players jump to resume normal movement
+			this.platformType = "normal";
 		}
 		else
 		{
 			this.canHoldJump = false;
 		}
+		
 		
 		//if the left D-pad is pressed of the left stick moved left, go left and limit the speed
 		if(left)
