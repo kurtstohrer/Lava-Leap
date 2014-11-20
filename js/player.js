@@ -101,49 +101,23 @@ Player.prototype.update = function update(dt)
 		}
 		
 		//if the left D-pad is pressed of the left stick moved left, go left and limit the speed
-		if(left){
-		
-			if(run = false)
-			{
-				//EDIT - CHAD
-				//edit movement when on a slow platform
-				if(this.platformType == "slow"){
-					
-					this.x -= 600 * dt;
-				}
-				else this.x -= 900 * dt;
+		if(left)
+		{
+			if(this.platformType == "slow"){
+				
+				this.x -= 160 * dt;
 			}
-			else
-			{
-				if(this.platformType == "slow"){
-					
-					this.x -= 160 * dt;
-				}
-				else this.x -= 360 * dt;
-			}
+			else this.x -= 480 * dt;
 		}
 		
 		//if the righ D-pad is pressed of the left stick moved right, go right and limit the speed
-		if(right){
-		
-			if(run = false)
+		if(right)
+		{
+			if(this.platformType == "slow")
 			{
-				//EDIT - CHAD
-				//edit movement when on a slow platform
-				if(this.platformType == "slow"){
-					
-					this.x += 600 * dt;
-				}
-				else this.x += 900 * dt;
+				this.x += 160 * dt;
 			}
-			else
-			{
-				if(this.platformType == "slow"){
-					
-					this.x += 160 * dt;
-				}
-				else this.x += 360 * dt;
-			}
+			else this.x += 480 * dt;
 		}
 		
 		if(this.x < 0)

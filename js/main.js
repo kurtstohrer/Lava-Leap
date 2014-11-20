@@ -145,8 +145,8 @@ app.main = {
 		
 	draw: function()
 	{
-			var width = this.WIDTH;
-			var height = this.HEIGHT;
+		var width = this.WIDTH;
+		var height = this.HEIGHT;
 		var pad = navigator.getGamepads();
 		
 		if(this.gamestate == "MAIN"){
@@ -155,14 +155,6 @@ app.main = {
 			if(pad[0] != undefined ){
 				this.drawLib.outRect(this.ctx,0,0,width/4,height,'#063B08','#000F01');
 				this.drawLib.text(this.ctx,'1',100,220,300,'#00E604');
-				
-				//BEGIN CHAD
-				//if the start button is pressed, change the gamestate
-				if(pad[0].buttons[9].pressed){
-					
-					this.gamestate = "GAME";
-				}
-				//END CHAD
 			}
 			else{
 				this.drawLib.outRect(this.ctx,0,0,width/4,height,'#595959','#2E2E2E');
@@ -183,14 +175,6 @@ app.main = {
 			if(pad[1] != undefined){
 				this.drawLib.outRect(this.ctx,width/4,0,width/4,height,'#730000','#380D0D');
 				this.drawLib.text(this.ctx,'2',width/4 +100,220,300,'#FF0000');
-				
-				//BEGIN CHAD
-				//if the start button is pressed, change the gamestate
-				if(pad[1].buttons[9].pressed){
-					
-					this.gamestate = "GAME";
-				}
-				//END CHAD
 			}
 			else{
 				this.drawLib.outRect(this.ctx,width/4,0,width/4,height,'#595959','#2E2E2E');
@@ -212,14 +196,6 @@ app.main = {
 			if(pad[2] != undefined){
 				this.drawLib.outRect(this.ctx,width/2,0,width/4,height,'blue','#000012');
 				this.drawLib.text(this.ctx,'3',width/2 +100,220,300,'#5258F2');
-				
-				//BEGIN CHAD
-				//if the start button is pressed, change the gamestate
-				if(pad[2].buttons[9].pressed){
-					
-					this.gamestate = "GAME";
-				}
-				//END CHAD
 			}
 			else{
 				this.drawLib.outRect(this.ctx,width/2,0,width/4,height,'#595959','#2E2E2E');
@@ -229,14 +205,6 @@ app.main = {
 			if(pad[3] != undefined){
 				this.drawLib.outRect(this.ctx,width - width/4,0,width/4,height,'purple','#120011');
 				this.drawLib.text(this.ctx,'4',width - width/4 +100,220,300,'#FA6EF8');
-				
-				//BEGIN CHAD
-				//if the start button is pressed, change the gamestate
-				if(pad[3].buttons[9].pressed){
-					
-					this.gamestate = "GAME";
-				}
-				//END CHAD
 			}
 			else{
 				this.drawLib.outRect(this.ctx,width - width/4,0,width/4,height,'#595959','#2E2E2E');
@@ -272,7 +240,10 @@ app.main = {
 			//draw backgrounds
 			this.ctx.drawImage(this.backImage, 0, this.backSpeed - 1080);
 			this.ctx.drawImage(this.backImage, 0, this.backSpeed);
-			console.log(this.backSpeed);
+			this.ctx.save();
+			this.ctx.fillStyle = 'rgba(0,0,0,0.5)';
+			this.ctx.fillRect(0,0,1920,1080);
+			this.ctx.restore();
 			//END CHAD
 			
 			if(this.startPlatform.active)
@@ -315,7 +286,7 @@ app.main = {
 			}
 			if(numactive == 0)
 			{
-				this.drawLib.text(this.ctx,"Your all bad at this!",width/2, 300, 100, '#fff');
+				this.drawLib.text(this.ctx,"You're all bad at this!",width/2, 300, 100, '#fff');
 			}
 			
 			this.drawLib.text(this.ctx,"Press [spacebar] return to main menu",width/2, 600, 80, '#fff');
@@ -415,11 +386,20 @@ app.main = {
 	update: function()
 	{
 		requestAnimationFrame(this.update.bind(this));
+		var pad = navigator.getGamepads();
 		
 		if(this.gamestate == "MAIN"){
 			if(app.keydown[80]){
 			
 				this.gamestate = "GAME";
+			}
+			
+			for(var i = 0; i < pad.length; i++)
+			{
+				if(pad[i] != undefined && pad[i].buttons[9].pressed){
+					
+					this.gamestate = "GAME";
+				}
 			}
 		
 		}
@@ -449,6 +429,7 @@ app.main = {
 					{
 						this.startPlatform.y += 1;
 					}
+					this.backSpeed += 1; 
 				}
 			}
 		
@@ -512,6 +493,14 @@ app.main = {
 		if(this.gamestate == "END"){
 			if(app.keydown[32]){
 				this.reset();
+			}
+						
+			for(var i = 0; i < pad.length; i++)
+			{
+				if(pad[i] != undefined && pad[i].buttons[0].pressed)
+				{	
+					this.reset();
+				}
 			}
 		
 		}
