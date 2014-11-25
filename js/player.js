@@ -110,7 +110,10 @@ Player.prototype.update = function update(dt)
 				
 				this.x -= 160 * dt;
 			}
-			else this.x -= 480 * dt;
+			else if (!this.platform || (this.platform && this.platform.type != "sticky"))
+			{				
+				this.x -= 480 * dt;
+			}
 		}
 		
 		//if the righ D-pad is pressed of the left stick moved right, go right and limit the speed
@@ -120,7 +123,10 @@ Player.prototype.update = function update(dt)
 			{
 				this.x += 160 * dt;
 			}
-			else this.x += 480 * dt;
+			else if (!this.platform || (this.platform && this.platform.type != "sticky"))
+			{				
+				this.x += 480 * dt;
+			}
 		}
 		
 		if(this.platform && this.platform.type == "moving")

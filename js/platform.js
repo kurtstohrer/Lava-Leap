@@ -46,7 +46,11 @@ app.Platform = function()
 				this.xVelocity *= -1;
 			}
 			this.x += this.xVelocity * dt;
-		}	
+		}
+		if(this.type == "sticky" && this.y > 800)
+		{
+			this.type = "normal";
+		}
 		this.y += speed * dt;
 		this.active = this.active && this.y < 1080;
 	};
@@ -70,6 +74,13 @@ app.Platform = function()
 		{	
 			ctx.save();
 			ctx.fillStyle = "purple";
+			ctx.fillRect(this.x, this.y, this.width, this.height);
+			ctx.restore();
+		}
+		if(this.type == "sticky")
+		{	
+			ctx.save();
+			ctx.fillStyle = "green";
 			ctx.fillRect(this.x, this.y, this.width, this.height);
 			ctx.restore();
 		}

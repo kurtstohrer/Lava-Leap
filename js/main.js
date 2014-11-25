@@ -27,7 +27,7 @@ app.main = {
 	platforms2: [],
 	platforms3: [],
 	platformArrays: [],
-	platformTypes: ["normal", "slow", "tramp", "moving", "ghost"],
+	platformTypes: ["normal", "slow", "tramp", "moving", "sticky", "ghost"],
 	startPlatform: undefined,
 	gamestate: undefined,
 	ticks: 0,
@@ -319,8 +319,11 @@ app.main = {
 							//player.x = player.prevx + pct * xdiff;
 							player.y = player.prevy - player.height + pct * ydiff;
 							player.yVelocity = this.speed;
-							player.canJump = true;
-							player.canHoldJump = true;
+							if(platform.type != "sticky")
+							{
+								player.canJump = true;
+								player.canHoldJump = true;
+							}
 							player.isOnPlatform(platform);
 						}
 					}
@@ -465,6 +468,10 @@ app.main = {
 					else if(randType < 0.30)
 					{
 						typeIndex = 3;
+					}
+					else if(randType < 0.80)
+					{
+						typeIndex = 4;
 					}
 					if(px + pwidth > this.WIDTH)
 					{
