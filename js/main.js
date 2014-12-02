@@ -37,6 +37,9 @@ app.main = {
 	platformImage: undefined,
 	backImage: undefined,
 	backSpeed:0,
+	
+	startTime: undefined,
+	time: undefined,
     
     // methods
 	init : function() {
@@ -290,6 +293,8 @@ app.main = {
 			}
 			
 			this.drawLib.text(this.ctx,"Press [spacebar] return to main menu",width/2, 600, 80, '#fff');
+			
+			this.drawLib.text(this.ctx,"You lasted " + this.time + " seconds",width/2, 800, 50, '#fff');
 		}
 	},
 	
@@ -395,6 +400,8 @@ app.main = {
 			if(app.keydown[80]){
 			
 				this.gamestate = "GAME";
+				
+				this.startTime = Date.now();
 			}
 			
 			for(var i = 0; i < pad.length; i++)
@@ -411,6 +418,7 @@ app.main = {
 		{
 			//loop through and update the players
 			this.ticks++;
+			this.time = (Date.now() - this.startTime) / 1000;
 			for(var i = 0; i < this.players.length; i++){
 				
 				this.players[i].update(this.dt);

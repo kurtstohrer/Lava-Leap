@@ -54,7 +54,6 @@ app.Platform = function()
 		}
 		if(this.ghost && Math.random() < 0.5 * dt)//randomly toggles roughly every 2 seconds
 		{
-			console.log(this.type);
 			if(this.type == "ghost")
 			{
 				this.type = "normal";
@@ -63,10 +62,8 @@ app.Platform = function()
 			{
 				this.type = "ghost";
 			}
-			console.log(this.type);
-			console.log();
 		}
-		if(this.type == "sticky" && this.y > 800)
+		if(this.type == "sticky" && this.y > 600)
 		{
 			this.type = "normal";
 		}
