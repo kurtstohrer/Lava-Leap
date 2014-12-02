@@ -36,7 +36,18 @@ app.main = {
 	
 	platformImage: undefined,
 	backImage: undefined,
+	gradients: [],
+	imgIndex: 0,
+	imgOpacityDown: 1.0,
+	imgOpacityUp: 0.0,
 	backSpeed:0,
+	parallaxWallBack: undefined,
+	parallaxWallFront: undefined,
+	parallaxBackSpeed:0,
+	parallaxFrontSpeed:0,
+	backScrollIndex: 0,
+	lavaImage: undefined,
+	platformImages: [],
 	
 	startTime: undefined,
 	time: undefined,
@@ -44,6 +55,9 @@ app.main = {
     // methods
 	init : function() {
 		// declare properties
+		var c = document.createElement("canvas");
+		document.body.appendChild(c);
+		
 		this.canvas = document.querySelector('canvas');
 		this.canvas.width = this.WIDTH;
 		this.canvas.height = this.HEIGHT;
@@ -84,6 +98,28 @@ app.main = {
 		
 		this.backImage = new Image();
 		this.backImage.src = "img/largewalltile-scaled.png";
+		
+		for(var i = 0; i < 4; i++){
+		
+			this.gradients.push(new Image());
+		}
+		
+		this.gradients[0].src = "img/gradient_v1.jpg";
+		this.gradients[1].src = "img/gradient_v2.jpg";
+		this.gradients[2].src = "img/gradient_v3.jpg";
+		this.gradients[3].src = "img/gradient_v4.jpg";
+		
+		this.parallaxWallBack = new Image();
+		this.parallaxWallBack.src = "img/parallax wall back shaded.png";
+		this.parallaxWallFront = new Image();
+		this.parallaxWallFront.src = "img/parallax wall front shaded.png";
+		
+		this.lavaImage = new Image();
+		this.lavaImage.src = "img/lava_mid.png";
+		
+		var platformImage = new Image();
+		platformImage.src = "img/jumpirontile_animated.png";
+		this.platformImages.push(platformImage);
 		
 		console.log(navigator.getGamepads());
 		this.platformArrays.push(this.platforms1);
@@ -237,17 +273,91 @@ app.main = {
 				this.backSpeed = 0;
 			}
 			
+			if(this.parallaxBackSpeed >= 1500){
+				
+				this.parallaxBackSpeed = 0;
+			}
+			
+			if(this.parallaxFrontSpeed >= 1500){
+				
+				//this.backScrollIndex++;
+				this.parallaxFrontSpeed = 0;
+			}
+			
+			
+			//END CHAD
+			
+			
 			//update background pos
 			this.backSpeed += this.speed * this.dt;
+			this.parallaxBackSpeed += (this.speed+20) * this.dt;
+			this.parallaxFrontSpeed += (this.speed+50) * this.dt;
 			
 			//draw backgrounds
 			this.ctx.drawImage(this.backImage, 0, this.backSpeed - 1080);
 			this.ctx.drawImage(this.backImage, 0, this.backSpeed);
+			
+			/*
+			//stay between 1 and 0
+			if(this.imgOpacityDown < 0){
+				this.imgOpacityDown = 0;
+				this.imgIndex++;
+				this.imgSwitch = !this.imgSwitch;
+			}
+			else if(this.imgOpacityDown > 1){
+				this.imgOpacityDown = 1;
+				this.imgIndex++;
+				this.imgSwitch = !this.imgSwitch;
+			}
+			
+			if(this.imgOpacityUp > 1){
+				this.imgOpacityUp = 1;
+			}
+			else if(this.imgOpacityUp < 0){
+				this.imgOpacityUp = 0;
+			}
+			
+			//if the direction is switched
+			if(!this.imgSwitch){
+			
+				this.imgOpacityDown -= .001;
+				this.imgOpacityUp += .001;
+			}
+			else{
+				
+				var temp = this.imgOpacityDown;
+				
+				this.imgOpacityDown = this.imgOpacityUp;
+				this.imgOpacityUp = temp;
+				this.imgSwitch = !this.imgSwitch;
+			}
+			
+			//reset imgIndex
+			if(this.imgIndex == 4){
+				this.imgIndex =  0;
+			}
+			
+			//draw the images in order {first image then second image
 			this.ctx.save();
-			this.ctx.fillStyle = 'rgba(0,0,0,0.5)';
-			this.ctx.fillRect(0,0,1920,1080);
+			this.ctx.globalAlpha = this.imgOpacityDown;
+			this.ctx.drawImage(this.gradients[this.imgIndex], 0, 0);
 			this.ctx.restore();
-			//END CHAD
+			
+			this.ctx.save();
+			this.ctx.globalAlpha = this.imgOpacityUp;
+			
+			//loop back to the first image if the above is the last image in the array
+			if(this.imgIndex + 1 >= 4){
+			
+				this.ctx.drawImage(this.gradients[0], 0, 0);
+			}
+			else{
+			
+				this.ctx.drawImage(this.gradients[this.imgIndex + 1], 0, 0);
+			}
+			
+			this.ctx.restore();
+			*/
 			
 			if(this.startPlatform.active)
 			{
@@ -261,6 +371,26 @@ app.main = {
 					platforms[i].draw(this.ctx, 1);
 				}
 			}
+			
+			for(var i = 0; i < 1920; i+=32){
+			
+				this.ctx.drawImage(this.lavaImage, i, this.HEIGHT-20);
+			}
+			
+			this.ctx.drawImage(this.parallaxWallBack, 0, this.parallaxBackSpeed - 1500);
+			this.ctx.drawImage(this.parallaxWallBack, 0, this.parallaxBackSpeed);
+			this.ctx.drawImage(this.parallaxWallFront, 0, this.parallaxFrontSpeed - 1500);
+			this.ctx.drawImage(this.parallaxWallFront, 0, this.parallaxFrontSpeed);
+			
+			this.ctx.save();
+			this.ctx.scale(-1,1);
+			this.ctx.drawImage(this.parallaxWallBack, -1920, this.parallaxBackSpeed - 1500);
+			this.ctx.drawImage(this.parallaxWallBack, -1920, this.parallaxBackSpeed);
+			this.ctx.drawImage(this.parallaxWallFront, -1920, this.parallaxFrontSpeed - 1500);
+			this.ctx.drawImage(this.parallaxWallFront, -1920, this.parallaxFrontSpeed);
+			this.ctx.restore();
+			
+			
 			//loop through and draw the players
 			for(var i = 0; i < this.players.length; i++){
 				
@@ -494,7 +624,12 @@ app.main = {
 					{
 						px = -px;
 					}
-					platforms.push(new app.Platform(pwidth, px, this.platformImage, this.platformTypes[typeIndex]));
+					
+					if(typeIndex == 2){
+					
+						platforms.push(new app.Platform(pwidth, px, this.platformImages[0], this.platformTypes[typeIndex]));
+					}
+					else platforms.push(new app.Platform(pwidth, px, this.platformImage, this.platformTypes[typeIndex]));
 				}
 				platforms = platforms.filter(function(platform)
 				{

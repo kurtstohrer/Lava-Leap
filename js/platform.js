@@ -27,6 +27,13 @@ app.Platform = function()
 		{
 			this.ghost = true;
 		}
+		
+		//for animation
+		this.imgIndex = 0;
+		this.ticsPerFrame = 45;
+		this.tics = 0;
+		this.animating = false;
+		this.counter = 0;
 	}
 	
 	var p = Platform.prototype;
@@ -69,6 +76,11 @@ app.Platform = function()
 		}
 		this.y += speed * dt;
 		this.active = this.active && this.y < 1080;
+		
+		if(this.type == "tramp"){
+			
+			this.animate();
+		}
 	};
 	
 	p.draw = function(ctx)
@@ -82,7 +94,7 @@ app.Platform = function()
 		
 		for(var i = 0; i < this.width; i+=32)
 		{
-			if(this.type != "ghost")
+			if(this.type != "ghost" && this.type != "tramp")
 			{
 				ctx.save();
 				ctx.drawImage(this.img, this.x + i, this.y);
@@ -91,10 +103,27 @@ app.Platform = function()
 		}
 		if(this.type == "tramp")
 		{	
+			//line for debugger
+			/*
 			ctx.save();
 			ctx.fillStyle = "purple";
 			ctx.fillRect(this.x, this.y, this.width, this.height);
 			ctx.restore();
+			*/
+			
+			for(var i = 0; i < this.width; i+=32){
+				
+				ctx.drawImage(
+					this.img, //image
+					this.imgIndex * 32, //x of the sprite sheet
+					0, // y of the sprite sheet
+					32, // width of the crop
+					16, // height of the crop
+					this.x+i, // x coord of where to draw
+					this.y, // y coord of where to draw
+					32, // width to draw the image
+					16); // height to draw the image
+			}
 		}
 		if(this.type == "sticky")
 		{	
@@ -126,6 +155,31 @@ app.Platform = function()
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 		ctx.restore();
 	};
+	
+	p.animate = function()
+	{
+		// increment tics
+		this.tics += 1;
+		
+		// if tics is >= the tics allowed per frame
+		// this controls the speed of the animation
+		if(this.tics >= this.ticsPerFrame)
+		{
+			// reset tics
+			this.tics = 0;
+			
+			// if we have reached the end of the sprite sheet
+			// if not, increment the imgIndex
+			if(this.imgIndex == 5)
+			{
+				// reset the counter, imgIndex and turn animating off
+				this.imgIndex = 5;
+				this.counter = 0;
+				this.animating = false;
+			}
+			else this.imgIndex += 1;
+		}
+	}
 	
 	return Platform;
 }();
