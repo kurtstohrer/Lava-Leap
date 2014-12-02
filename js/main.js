@@ -305,7 +305,7 @@ app.main = {
 				for(var k = 0; k < platforms.length; k++)
 				{
 					var platform = platforms[k];
-					if(player.y + player.height >= platform.y && player.prevy + player.height <= platform.y)
+					if(platform.type != "ghost" && player.y + player.height >= platform.y && player.prevy + player.height <= platform.y)
 					{
 						//console.log("110");
 						var xdiff = player.x - player.prevx;
@@ -469,9 +469,13 @@ app.main = {
 					{
 						typeIndex = 3;
 					}
-					else if(randType < 0.80)
+					else if(randType < 0.40)
 					{
 						typeIndex = 4;
+					}
+					else if(randType < 0.50)
+					{
+						typeIndex = 5;
 					}
 					if(px + pwidth > this.WIDTH)
 					{

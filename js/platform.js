@@ -22,6 +22,11 @@ app.Platform = function()
 		{
 			this.xVelocity *= -1;
 		}
+		this.ghost = false;
+		if(this.type == "ghost")
+		{
+			this.ghost = true;
+		}
 	}
 	
 	var p = Platform.prototype;
@@ -47,6 +52,20 @@ app.Platform = function()
 			}
 			this.x += this.xVelocity * dt;
 		}
+		if(this.ghost && Math.random() < 0.5 * dt)//randomly toggles roughly every 2 seconds
+		{
+			console.log(this.type);
+			if(this.type == "ghost")
+			{
+				this.type = "normal";
+			}
+			else if(this.type == "normal")
+			{
+				this.type = "ghost";
+			}
+			console.log(this.type);
+			console.log();
+		}
 		if(this.type == "sticky" && this.y > 800)
 		{
 			this.type = "normal";
@@ -64,11 +83,14 @@ app.Platform = function()
 		//ctx.fillRect(this.x, this.y, this.width, this.height);
 		//ctx.restore();
 		
-		for(var i = 0; i < this.width; i+=32){
-			
-			ctx.save();
-			ctx.drawImage(this.img, this.x + i, this.y);
-			ctx.restore();
+		for(var i = 0; i < this.width; i+=32)
+		{
+			if(this.type != "ghost")
+			{
+				ctx.save();
+				ctx.drawImage(this.img, this.x + i, this.y);
+				ctx.restore();
+			}
 		}
 		if(this.type == "tramp")
 		{	
@@ -82,6 +104,13 @@ app.Platform = function()
 			ctx.save();
 			ctx.fillStyle = "green";
 			ctx.fillRect(this.x, this.y, this.width, this.height);
+			ctx.restore();
+		}
+		if(this.ghost)
+		{
+			ctx.save();
+			ctx.fillStyle = "rgba(255,255,255,0.25)";
+			ctx.fillRect(this.x, this.y, this.width, this.height/2);
 			ctx.restore();
 		}
 	};
