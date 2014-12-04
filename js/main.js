@@ -674,6 +674,8 @@ app.main = {
 		
 		if(this.gamestate == "TITLE"){
 		this.titleTick --;
+		var makeSound = false;
+		
 			if(this.menuState > 3 ){
 					this.menuState = 1;
 					
@@ -690,6 +692,7 @@ app.main = {
 						this.menuState ++;
 						this.titleTick = 15;
 						console.log(this.menuState);
+						makeSound=true;
 					}
 					
 				}
@@ -697,6 +700,7 @@ app.main = {
 					if(this.titleTick <=0 ){
 						this.menuState --;
 						this.titleTick = 15;
+						makeSound=true;
 					}
 					
 				}
@@ -707,6 +711,7 @@ app.main = {
 									this.gamestate = "SINGLE";
 									this.startTime = Date.now();
 									this.startButtonTick = 30;
+									makeSound=true;
 								}
 							}
 							if(this.menuState == 2){
@@ -714,6 +719,7 @@ app.main = {
 								if(this.startButtonTick < 0 ){
 									this.gamestate = "MAIN";
 									this.startButtonTick = 30;
+									makeSound=true;
 								}
 								
 							}
@@ -727,6 +733,7 @@ app.main = {
 			if(this.titleTick <=0 ){
 						this.menuState --;
 						this.titleTick = 15;
+						makeSound=true;
 					}
 				
 			}
@@ -734,10 +741,12 @@ app.main = {
 				if(this.titleTick <=0 ){
 						this.menuState ++;
 						this.titleTick = 15;
+						makeSound=true;
 					}
 				
 			}
 			if(app.keydown[13]){
+				makeSound=true;
 				if(this.menuState == 1){
 					this.gamestate = "SINGLE";
 					this.startTime = Date.now();
@@ -758,7 +767,7 @@ app.main = {
 			if(app.keydown[80]){
 			
 				this.gamestate = "GAME";
-				
+				makeSound=true;
 				this.startTime = Date.now();
 			}
 			
@@ -769,10 +778,17 @@ app.main = {
 						this.gamestate = "GAME";
 						this.startTime = Date.now();
 						this.startButtonTick = 30;
+						makeSound=true;
 					}
 				}
 			}
 		
+		}
+		
+		if(makeSound){
+			var sfx = new Audio("sfx.mp3");
+			sfx.volume = 0.4;
+			sfx.play();
 		}
 		
 		if(this.gamestate == "GAME" || this.gamestate == "SINGLE")
@@ -954,6 +970,10 @@ app.main = {
 
 window.onload = function() {
 	console.log("init called");
+	
+	audio = new Audio("thefloorislava.mp3");
+	audio.loop = true;
+	audio.play();
 	
 	window.addEventListener("keydown", function(e){
 		//console.log("keydown " + e.keyCode);
