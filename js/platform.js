@@ -17,6 +17,8 @@ app.Platform = function()
 		this.active = true;
 		this.img = image;
 		this.type = type;
+		this.currentType = type;
+		this.prevType = type;
 		this.xVelocity = Math.random() * 100 + 100;
 		if(Math.random() < 0.5)
 		{
@@ -30,7 +32,17 @@ app.Platform = function()
 		
 		//for animation
 		this.imgIndex = 0;
-		this.ticsPerFrame = 45;
+		
+		if(this.type == "sticky"){
+		
+			this.ticsPerFrame = 120;
+		}
+		else if(this.type == "ghost"){
+		
+			this.ticsPerFrame = 10;
+		}
+		else this.ticsPerFrame = 45;
+		
 		this.tics = 0;
 		this.animating = false;
 		this.counter = 0;
@@ -45,6 +57,8 @@ app.Platform = function()
 	
 	p.update = function(dt, speed)
 	{
+		this.prevType = this.type;
+		
 		if(this.type == "moving")
 		{
 			if(this.x < 0)
@@ -77,10 +91,17 @@ app.Platform = function()
 		this.y += speed * dt;
 		this.active = this.active && this.y < 1080;
 		
-		if(this.type == "tramp"){
+		if(this.type == "tramp" || this.type == "sticky"){
 			
 			this.animate();
 		}
+		
+		if(this.currentType == "normal" && this.prevType == "ghost"){
+		
+			this.animate();
+		}
+		
+		this.currentType = this.type;
 	};
 	
 	p.draw = function(ctx)
@@ -91,6 +112,12 @@ app.Platform = function()
 		//ctx.fillStyle = "black";
 		//ctx.fillRect(this.x, this.y, this.width, this.height);
 		//ctx.restore();
+		//if(this.type == "moving"){
+		//	for(var i = 0; i < app.main.WIDTH; i+=32){
+		//	
+		//		ctx.drawImage(app.main.platformImages[3], 0 + i, this.y);
+		//	}
+		//}
 		
 		for(var i = 0; i < this.width; i+=32)
 		{
@@ -99,6 +126,23 @@ app.Platform = function()
 				ctx.save();
 				ctx.drawImage(this.img, this.x + i, this.y);
 				ctx.restore();
+				
+				if(this.prevType == "ghost" && this.currentTyp == "normal"){
+					
+					for(var i = 0; i < this.width; i+=32){
+				
+						ctx.drawImage(
+						app.main.platformImages[3], //image
+						this.imgIndex * 32, //x of the sprite sheet
+						0, // y of the sprite sheet
+						32, // width of the crop
+						16, // height of the crop
+						this.x+i, // x coord of where to draw
+						this.y, // y coord of where to draw
+						32, // width to draw the image
+						16); // height to draw the image
+					}
+				}
 			}
 		}
 		if(this.type == "tramp")
@@ -125,14 +169,30 @@ app.Platform = function()
 					16); // height to draw the image
 			}
 		}
-		if(this.type == "sticky")
+		else if(this.type == "sticky")
 		{	
+			for(var i = 0; i < this.width; i+=32){
+				console.log(this.width);
+				ctx.drawImage(
+					this.img, //image
+					this.imgIndex * 32, //x of the sprite sheet
+					0, // y of the sprite sheet
+					32, // width of the crop
+					20, // height of the crop
+					this.x+i, // x coord of where to draw
+					this.y, // y coord of where to draw
+					32, // width to draw the image
+					20); // height to draw the image
+			}
+			
+			
 			ctx.save();
 			ctx.fillStyle = "green";
 			ctx.fillRect(this.x, this.y, this.width, this.height);
 			ctx.restore();
+			
 		}
-		if(this.ghost)
+		else if(this.ghost)
 		{
 			ctx.save();
 			ctx.fillStyle = "rgba(255,255,255,0.25)";
@@ -170,7 +230,21 @@ app.Platform = function()
 			
 			// if we have reached the end of the sprite sheet
 			// if not, increment the imgIndex
-			if(this.imgIndex == 5)
+			if(this.type == "tramp" && this.imgIndex == 5)
+			{
+				// reset the counter, imgIndex and turn animating off
+				this.imgIndex = 5;
+				this.counter = 0;
+				this.animating = false;
+			}
+			else if(this.type == "sticky" && this.imgIndex == 2)
+			{
+				// reset the counter, imgIndex and turn animating off
+				this.imgIndex = 2;
+				this.counter = 0;
+				this.animating = false;
+			}
+			else if(this.currentType == "normal" && this.prevType == "ghost" && this.imgIndex == 5)
 			{
 				// reset the counter, imgIndex and turn animating off
 				this.imgIndex = 5;

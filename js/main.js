@@ -22,6 +22,7 @@ app.main = {
     canvas: undefined,
     ctx: undefined,
 	players: [],
+	playerImages: [],
 	colors: ["green", "red", "blue", "purple"],
 	platforms1: [],
 	platforms2: [],
@@ -125,8 +126,29 @@ app.main = {
 		this.lavaImage = new Image();
 		this.lavaImage.src = "img/lava_mid.png";
 		
+		//tramp tile
 		var platformImage = new Image();
-		platformImage.src = "img/jumpirontile_animated.png";
+		platformImage.src = "img/jumpirontile_animated_v2.png";
+		this.platformImages.push(platformImage);
+		
+		//sticky tile
+		platformImage = new Image();
+		platformImage.src = "img/stickytile_vanishing_animated.png";
+		this.platformImages.push(platformImage);
+		
+		//ghost tile
+		platformImage = new Image();
+		platformImage.src = "img/ghosttile.png";
+		this.platformImages.push(platformImage);
+		
+		
+		platformImage = new Image();
+		platformImage.src = "img/ghosttile vanishing.png";
+		this.platformImages.push(platformImage);
+		
+		//moving tiles
+		platformImage = new Image();
+		platformImage.src = "img/wallfurrow.png";
 		this.platformImages.push(platformImage);
 		
 		console.log(navigator.getGamepads());
@@ -831,9 +853,19 @@ app.main = {
 						px = -px;
 					}
 					
+					//platform images
+					//0:normal 1:sticky 2:ghost 3:moving
 					if(typeIndex == 2){
 					
 						platforms.push(new app.Platform(pwidth, px, this.platformImages[0], this.platformTypes[typeIndex]));
+					}
+					else if(typeIndex == 4){
+
+						platforms.push(new app.Platform(pwidth, px, this.platformImages[1], this.platformTypes[typeIndex]));
+					}
+					else if(typeIndex == 5){
+					
+						platforms.push(new app.Platform(pwidth, px, this.platformImages[2], this.platformTypes[typeIndex]));
 					}
 					else platforms.push(new app.Platform(pwidth, px, this.platformImage, this.platformTypes[typeIndex]));
 				}
