@@ -55,6 +55,8 @@ app.main = {
 	startTime: undefined,
 	time: undefined,
 	titleTick: 10,
+	singleTick: 60,
+	singleClock:0,
     
     // methods
 	init : function() {
@@ -145,7 +147,7 @@ app.main = {
 		this.update();
 	},
 	
-	reset: function(){
+	reset: function(gamestate){
 	
 		this.players = [];
 		this.platforms1 = [];
@@ -155,6 +157,9 @@ app.main = {
 		this.ticks = 0;
 		this.backSpeed = 0;
 		this.speed = 150;
+		this.singleTick = 60;
+		this.singleClock = 0;
+		
 		
 		//get connected gamepads
 		var pad = navigator.getGamepads();
@@ -186,7 +191,7 @@ app.main = {
 		this.startPlatform = new app.Platform(this.WIDTH, 0, this.platformImage, this.platformTypes[0]);
 		this.startPlatform.y = this.HEIGHT * 3/5;
 			
-		this.gamestate = "MAIN";
+		this.gamestate = gamestate;
 		this.menuState = 1;
 	},
 		
@@ -399,6 +404,14 @@ app.main = {
 				}
 			}
 			
+			
+			
+			
+			//loop through and draw the players
+			for(var i = 0; i < this.players.length; i++){
+				
+				this.players[i].draw(this.ctx);
+			}
 			for(var i = 0; i < 1920; i+=32){
 			
 				this.ctx.drawImage(this.lavaImage, i, this.HEIGHT-20);
@@ -416,13 +429,80 @@ app.main = {
 			this.ctx.drawImage(this.parallaxWallFront, -1920, this.parallaxFrontSpeed - 1500);
 			this.ctx.drawImage(this.parallaxWallFront, -1920, this.parallaxFrontSpeed);
 			this.ctx.restore();
+		}
+		if(this.gamestate == "SINGLE"){
+			
+			
+			if(this.backSpeed >= 1080){
+				
+				this.backSpeed = 0;
+			}
+			
+			if(this.parallaxBackSpeed >= 1500){
+				
+				this.parallaxBackSpeed = 0;
+			}
+			
+			if(this.parallaxFrontSpeed >= 1500){
+				
+				//this.backScrollIndex++;
+				this.parallaxFrontSpeed = 0;
+			}
+			
+			
+			//END CHAD
+			
+			
+			//update background pos
+			this.backSpeed += this.speed * this.dt;
+			this.parallaxBackSpeed += (this.speed+20) * this.dt;
+			this.parallaxFrontSpeed += (this.speed+50) * this.dt;
+			
+			//draw backgrounds
+			this.ctx.drawImage(this.backImage, 0, this.backSpeed - 1080);
+			this.ctx.drawImage(this.backImage, 0, this.backSpeed);
+			
+			
+			if(this.startPlatform.active)
+			{
+				this.startPlatform.draw(this.ctx);
+			}
+			for(var j = 0; j < this.platformArrays.length; j++)
+			{
+				var platforms = this.platformArrays[j];
+				for(var i = 0; i < platforms.length; i++)
+				{
+					platforms[i].draw(this.ctx, 1);
+				}
+			}
+			
+			
+			
+			
 			
 			
 			//loop through and draw the players
-			for(var i = 0; i < this.players.length; i++){
-				
-				this.players[i].draw(this.ctx);
+			
+				this.drawLib.text(this.ctx,this.singleClock,this.WIDTH/2, this.HEIGHT - 50, 50, '#fff');
+				this.players[0].draw(this.ctx);
+				for(var i = 0; i < 1920; i+=32){
+			
+				this.ctx.drawImage(this.lavaImage, i, this.HEIGHT-20);
 			}
+			
+			this.ctx.drawImage(this.parallaxWallBack, 0, this.parallaxBackSpeed - 1500);
+			this.ctx.drawImage(this.parallaxWallBack, 0, this.parallaxBackSpeed);
+			this.ctx.drawImage(this.parallaxWallFront, 0, this.parallaxFrontSpeed - 1500);
+			this.ctx.drawImage(this.parallaxWallFront, 0, this.parallaxFrontSpeed);
+			
+			this.ctx.save();
+			this.ctx.scale(-1,1);
+			this.ctx.drawImage(this.parallaxWallBack, -1920, this.parallaxBackSpeed - 1500);
+			this.ctx.drawImage(this.parallaxWallBack, -1920, this.parallaxBackSpeed);
+			this.ctx.drawImage(this.parallaxWallFront, -1920, this.parallaxFrontSpeed - 1500);
+			this.ctx.drawImage(this.parallaxWallFront, -1920, this.parallaxFrontSpeed);
+			this.ctx.restore();
+			
 		}
 		if(this.gamestate == "END"){
 		
@@ -452,6 +532,22 @@ app.main = {
 			this.drawLib.text(this.ctx,"Press [spacebar] or START to play again",width/2, 600, 80, '#fff');
 			
 			this.drawLib.text(this.ctx,"You lasted " + this.time + " seconds",width/2, 800, 50, '#fff');
+		}
+		if(this.gamestate == "SINGLEEND"){
+		
+			this.ctx.fillStyle = "#000";
+			this.ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+			
+			
+			
+			
+			
+			this.drawLib.text(this.ctx,"You Lasted: "+ this.singleClock + " seconds",width/2, 300, 100, '#fff');
+			
+			
+			this.drawLib.text(this.ctx,"Press [spacebar] or START to play again",width/2, 600, 80, '#fff');
+			
+			
 		}
 	},
 	
@@ -571,6 +667,7 @@ app.main = {
 					if(this.titleTick <=0 ){
 						this.menuState ++;
 						this.titleTick = 15;
+						console.log(this.menuState);
 					}
 					
 				}
@@ -582,20 +679,24 @@ app.main = {
 					
 				}
 				if(pad[i] != undefined && pad[i].buttons[9].pressed){
-					if(this.menuState == 1){
-				
-					}
-					if(this.menuState == 2){
-						
-						if(this.startButtonTick < 0 ){
-							this.gamestate = "MAIN";
-							this.startButtonTick = 30;
-						}
-						
-					}
-					if(this.menuState == 3){
-						
-					}
+							if(this.menuState == 1){
+								if(this.startButtonTick < 0 ){
+									
+									this.gamestate = "SINGLE";
+									this.startButtonTick = 30;
+								}
+							}
+							if(this.menuState == 2){
+								
+								if(this.startButtonTick < 0 ){
+									this.gamestate = "MAIN";
+									this.startButtonTick = 30;
+								}
+								
+							}
+							if(this.menuState == 3){
+								
+							}
 					
 				}
 			}
@@ -615,11 +716,11 @@ app.main = {
 			}
 			if(app.keydown[13]){
 				if(this.menuState == 1){
-				
+					this.gamestate = "SINGLE";
 				}
 				if(this.menuState == 2){
 					this.gamestate = "MAIN";
-					console
+					
 				}
 				if(this.menuState == 3){
 					
@@ -649,7 +750,7 @@ app.main = {
 		
 		}
 		
-		if(this.gamestate == "GAME" )
+		if(this.gamestate == "GAME" || this.gamestate == "SINGLE")
 		{
 			//loop through and update the players
 			this.ticks++;
@@ -754,12 +855,42 @@ app.main = {
 				winner = i;
 			}
 		}
-		if(numactive <= 1)
-		{
-			this.gamestate = "END";
+		if(this.gamestate == "GAME"){
+			if(numactive <= 1)
+			{
+				this.gamestate = "END";
+			}
+		}
+		if(this.gamestate == "SINGLE"){
+		
+		this.singleTick --;
+		if(this.singleTick <= 0 ){
+			this.singleClock ++;
+			this.singleTick = 60;
+		}
+			if(numactive <= 0)
+			{
+				this.gamestate = "SINGLEEND";
+			}
 		}
 		
 		if(this.gamestate == "END"){
+			if(app.keydown[32]){
+				this.reset("MAIN");
+			}
+						
+			for(var i = 0; i < pad.length; i++)
+			{
+				if(pad[i] != undefined && pad[i].buttons[9].pressed){
+					if(this.startButtonTick < 0 ){
+						this.reset("MAIN");
+						this.startButtonTick = 30;
+					}
+				}
+			}
+		
+		}
+		if(this.gamestate == "SINGLEEND"){
 			if(app.keydown[32]){
 				this.reset();
 			}
@@ -768,7 +899,7 @@ app.main = {
 			{
 				if(pad[i] != undefined && pad[i].buttons[9].pressed){
 					if(this.startButtonTick < 0 ){
-						this.reset();
+						this.reset("TITLE");
 						this.startButtonTick = 30;
 					}
 				}
