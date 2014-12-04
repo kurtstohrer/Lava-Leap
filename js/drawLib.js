@@ -66,4 +66,12 @@ app.drawLib = {
 		ctx.fillRect(x,y,w,h);
 		ctx.restore();
 	},
+	alpharect : function(ctx, x, y, w, h, col,alph)
+	{
+		ctx.save();
+		ctx.globalAlpha=alph;
+		ctx.fillStyle = col;
+		ctx.fillRect(x,y,w,h);
+		ctx.restore();
+	},
 };
