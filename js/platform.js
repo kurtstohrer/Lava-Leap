@@ -29,6 +29,13 @@ app.Platform = function()
 		{
 			this.ghost = true;
 		}
+		this.sticky = false;
+		if(this.type == "sticky")
+		{
+			this.sticky = true;
+		}
+		
+		
 		
 		//for animation
 		this.imgIndex = 0;
@@ -86,7 +93,7 @@ app.Platform = function()
 		}
 		if(this.type == "sticky" && this.y > 600)
 		{
-			this.type = "normal";
+			this.sticky = false;
 		}
 		this.y += speed * dt;
 		this.active = this.active && this.y < 1080;
@@ -121,7 +128,7 @@ app.Platform = function()
 		
 		for(var i = 0; i < this.width; i+=32)
 		{
-			if(this.type != "ghost" && this.type != "tramp")
+			if(this.type != "ghost" && this.type != "tramp" && this.type != "sticky")
 			{
 				ctx.save();
 				ctx.drawImage(this.img, this.x + i, this.y);
@@ -172,7 +179,7 @@ app.Platform = function()
 		else if(this.type == "sticky")
 		{	
 			for(var i = 0; i < this.width; i+=32){
-				console.log(this.width);
+				//console.log(this.width);
 				ctx.drawImage(
 					this.img, //image
 					this.imgIndex * 32, //x of the sprite sheet
@@ -185,11 +192,13 @@ app.Platform = function()
 					20); // height to draw the image
 			}
 			
-			
-			ctx.save();
-			ctx.fillStyle = "green";
-			ctx.fillRect(this.x, this.y, this.width, this.height);
-			ctx.restore();
+			if(false && this.sticky)
+			{
+				ctx.save();
+				ctx.fillStyle = "green";
+				ctx.fillRect(this.x, this.y, this.width, this.height);
+				ctx.restore();
+			}
 			
 		}
 		else if(this.ghost)

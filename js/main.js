@@ -599,7 +599,7 @@ app.main = {
 							//player.x = player.prevx + pct * xdiff;
 							player.y = player.prevy - player.height + pct * ydiff;
 							player.yVelocity = this.speed;
-							if(platform.type != "sticky")
+							if(!platform.sticky)
 							{
 								player.canJump = true;
 								player.canHoldJump = true;
@@ -705,6 +705,7 @@ app.main = {
 								if(this.startButtonTick < 0 ){
 									
 									this.gamestate = "SINGLE";
+									this.startTime = Date.now();
 									this.startButtonTick = 30;
 								}
 							}
@@ -739,6 +740,7 @@ app.main = {
 			if(app.keydown[13]){
 				if(this.menuState == 1){
 					this.gamestate = "SINGLE";
+					this.startTime = Date.now();
 				}
 				if(this.menuState == 2){
 					this.gamestate = "MAIN";
@@ -765,6 +767,7 @@ app.main = {
 				if(pad[i] != undefined && pad[i].buttons[9].pressed){
 					if(this.startButtonTick < 0 ){
 						this.gamestate = "GAME";
+						this.startTime = Date.now();
 						this.startButtonTick = 30;
 					}
 				}
@@ -777,6 +780,8 @@ app.main = {
 			//loop through and update the players
 			this.ticks++;
 			this.time = (Date.now() - this.startTime) / 1000;
+			console.log(this.speed);
+			this.speed = 150 + this.time;// * 0.5;
 			for(var i = 0; i < this.players.length; i++){
 				
 				this.players[i].update(this.dt);

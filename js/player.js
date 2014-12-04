@@ -110,7 +110,7 @@ Player.prototype.update = function update(dt)
 				
 				this.x -= 160 * dt;
 			}
-			else if (!this.platform || (this.platform && this.platform.type != "sticky"))
+			else if (!this.platform || (this.platform && !this.platform.sticky))
 			{				
 				this.x -= 480 * dt;
 			}
@@ -123,7 +123,7 @@ Player.prototype.update = function update(dt)
 			{
 				this.x += 160 * dt;
 			}
-			else if (!this.platform || (this.platform && this.platform.type != "sticky"))
+			else if (!this.platform || (this.platform && !this.platform.sticky))
 			{				
 				this.x += 480 * dt;
 			}
