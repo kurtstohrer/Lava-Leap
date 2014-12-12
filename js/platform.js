@@ -35,8 +35,6 @@ app.Platform = function()
 			this.sticky = true;
 		}
 		
-		
-		
 		//for animation
 		this.imgIndex = 0;
 		

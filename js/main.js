@@ -74,6 +74,33 @@ app.main = {
 		
 		this.drawLib= app.drawLib;
 		
+		
+		//player images
+		var playerColors = ["blue", "green", "purple", "cyan"];
+		
+		for(var i = 0; i < playerColors.length; i++){
+		
+			var images = [];
+			
+			var image = new Image();
+			image.src = "img/" + playerColors[i] + "_character_idle.png";
+			images.push(image);
+			
+			image = new Image();
+			image.src = "img/" + playerColors[i] + "_running_v2.png";
+			images.push(image);
+			
+			image = new Image();
+			image.src = "img/" + playerColors[i] + "_character_jumping.png";
+			images.push(image);
+			
+			image = new Image();
+			image.src = "img/" + playerColors[i] + "_character_falling.png";
+			images.push(image);
+			
+			this.playerImages.push(images);
+		}
+		
 		//get connected gamepads
 		var pad = navigator.getGamepads();
 		var numPlayers = 0;
@@ -87,9 +114,9 @@ app.main = {
 		if(numPlayers < 2) numPlayers = 2;
 		
 		//loop through and create a player for each gamepad
-		for(var i = 0; i < numPlayers; i++)
-		{
-			this.players.push(new Player(this.WIDTH * (i+1)/(numPlayers+1), 500, this.colors[i], i));
+		for(var i = 0; i < numPlayers; i++){
+		
+			this.players.push(new Player(this.WIDTH * (i+1)/(numPlayers+1), 500, this.playerImages[i], i));
 		}
 		
 		/*for(var i = 2; i < numPlayers; i++){
@@ -113,10 +140,10 @@ app.main = {
 			this.gradients.push(new Image());
 		}
 		
-		this.gradients[0].src = "img/gradient_v1.jpg";
-		this.gradients[1].src = "img/gradient_v2.jpg";
-		this.gradients[2].src = "img/gradient_v3.jpg";
-		this.gradients[3].src = "img/gradient_v4.jpg";
+		this.gradients[0].src = "img/gradient_v1.png";
+		this.gradients[1].src = "img/gradient_v2.png";
+		this.gradients[2].src = "img/gradient_v3.png";
+		this.gradients[3].src = "img/gradient_v4.png";
 		
 		this.parallaxWallBack = new Image();
 		this.parallaxWallBack.src = "img/parallax wall back shaded.png";
@@ -599,6 +626,7 @@ app.main = {
 							//player.x = player.prevx + pct * xdiff;
 							player.y = player.prevy - player.height + pct * ydiff;
 							player.yVelocity = this.speed;
+							player.falling = false;
 							if(!platform.sticky)
 							{
 								player.canJump = true;
@@ -626,6 +654,7 @@ app.main = {
 						player.y = player.prevy - player.height + pct * ydiff;
 						player.yVelocity = this.speed;
 						player.canJump = true;
+						player.falling = false;
 						player.canHoldJump = true;
 						player.isOnPlatform(platform);
 					}
@@ -788,7 +817,7 @@ app.main = {
 		if(makeSound){
 			var sfx = new Audio("sfx.mp3");
 			sfx.volume = 0.4;
-			sfx.play();
+			//sfx.play();
 		}
 		
 		if(this.gamestate == "GAME" || this.gamestate == "SINGLE")
@@ -796,7 +825,7 @@ app.main = {
 			//loop through and update the players
 			this.ticks++;
 			this.time = (Date.now() - this.startTime) / 1000;
-			console.log(this.speed);
+			//console.log(this.speed);
 			this.speed = 150 + this.time;// * 0.5;
 			for(var i = 0; i < this.players.length; i++){
 				
@@ -971,9 +1000,9 @@ app.main = {
 window.onload = function() {
 	console.log("init called");
 	
-	audio = new Audio("thefloorislava.mp3");
+	var audio = new Audio("thefloorislava.mp3");
 	audio.loop = true;
-	audio.play();
+	//audio.play();
 	
 	window.addEventListener("keydown", function(e){
 		//console.log("keydown " + e.keyCode);
