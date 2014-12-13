@@ -38,11 +38,7 @@ app.Platform = function()
 		//for animation
 		this.imgIndex = 0;
 		
-		if(this.type == "sticky"){
-		
-			this.ticsPerFrame = 120;
-		}
-		else if(this.type == "ghost"){
+		if(this.type == "ghost"){
 		
 			this.ticsPerFrame = 10;
 		}
@@ -89,17 +85,24 @@ app.Platform = function()
 				this.type = "ghost";
 			}
 		}
-		if(this.type == "sticky" && this.y > 600)
+		if(this.type == "sticky")
 		{
-			this.sticky = false;
+			if (this.y > 600)
+			{
+				this.sticky = false;
+				this.imgIndex = 2;
+			}
+			if (this.y > 500 && this.y <= 600)
+			{
+				this.imgIndex = 1;
+			}
+		}
+		if(this.type == "tramp")
+		{
+			this.imgIndex = Math.min(Math.floor(this.y / 180), 5);
 		}
 		this.y += speed * dt;
 		this.active = this.active && this.y < 1080;
-		
-		if(this.type == "tramp" || this.type == "sticky"){
-			
-			this.animate();
-		}
 		
 		if(this.currentType == "normal" && this.prevType == "ghost"){
 		
@@ -237,14 +240,14 @@ app.Platform = function()
 			
 			// if we have reached the end of the sprite sheet
 			// if not, increment the imgIndex
-			if(this.type == "tramp" && this.imgIndex == 5)
+			if(this.type == "tramp" && this.imgIndex == 5 && false)
 			{
 				// reset the counter, imgIndex and turn animating off
 				this.imgIndex = 5;
 				this.counter = 0;
 				this.animating = false;
 			}
-			else if(this.type == "sticky" && this.imgIndex == 2)
+			else if(this.type == "sticky" && this.imgIndex == 2 && false)
 			{
 				// reset the counter, imgIndex and turn animating off
 				this.imgIndex = 2;
