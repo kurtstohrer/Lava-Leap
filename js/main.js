@@ -58,6 +58,8 @@ app.main = {
 	titleTick: 10,
 	singleTick: 60,
 	singleClock:0,
+	fadeAlph: 1,
+	fadeout: undefined,
     
     // methods
 	init : function() {
@@ -190,7 +192,9 @@ app.main = {
 		}
 		this.startPlatform = new app.Platform(this.WIDTH, 0, this.platformImage, this.platformTypes[0]);
 		this.startPlatform.y = this.HEIGHT * 3/5;
-			
+		
+		this.fadeout = "TRUE";
+		
 		this.gamestate = "TITLE";
 		this.menuState = 1;
 		this.update();
@@ -270,15 +274,16 @@ app.main = {
 		}
 		
 		if(this.gamestate == "MAIN"){
-		
+			
+			
 			//player1
 			if(pad[0] != undefined ){
-				this.drawLib.outRect(this.ctx,0,0,width/4,height,'#063B08','#000F01');
-				this.drawLib.text(this.ctx,'1',100,220,300,'#00E604');
+				this.drawLib.outRect(this.ctx,0,0,width/4,height,'#97a5d1','#1c3170');
+				this.drawLib.text(this.ctx,'1',100,270,300,'#1c3170');
 			}
 			else{
 				this.drawLib.outRect(this.ctx,0,0,width/4,height,'#595959','#2E2E2E');
-				this.drawLib.text(this.ctx,'1',100,220,300,'#878787');
+				this.drawLib.text(this.ctx,'1',100,270,300,'#878787');
 				this.drawLib.rect(this.ctx, width/8 - 37.5, 450, 75, 75, '#878787');
 				this.drawLib.rect(this.ctx, width/8 - 37.5, 526, 75, 75, '#878787');
 				this.drawLib.rect(this.ctx, width/8 - 113.5, 526, 75, 75, '#878787');
@@ -293,12 +298,12 @@ app.main = {
 			}
 			//player2
 			if(pad[1] != undefined){
-				this.drawLib.outRect(this.ctx,width/4,0,width/4,height,'#730000','#380D0D');
-				this.drawLib.text(this.ctx,'2',width/4 +100,220,300,'#FF0000');
+				this.drawLib.outRect(this.ctx,width/4,0,width/4,height,'#69ab70','#16511c');
+				this.drawLib.text(this.ctx,'2',width/4 +100,270,300,'#16511c');
 			}
 			else{
 				this.drawLib.outRect(this.ctx,width/4,0,width/4,height,'#595959','#2E2E2E');
-				this.drawLib.text(this.ctx,'2',width/4 +100,220,300,'#878787');
+				this.drawLib.text(this.ctx,'2',width/4 +100,270,300,'#878787');
 				this.drawLib.rect(this.ctx, width*3/8 - 37.5, 450, 75, 75, '#878787');
 				this.drawLib.rect(this.ctx, width*3/8 - 37.5, 526, 75, 75, '#878787');
 				this.drawLib.rect(this.ctx, width*3/8 - 113.5, 526, 75, 75, '#878787');
@@ -314,26 +319,33 @@ app.main = {
 			}
 			//player3
 			if(pad[2] != undefined){
-				this.drawLib.outRect(this.ctx,width/2,0,width/4,height,'blue','#000012');
-				this.drawLib.text(this.ctx,'3',width/2 +100,220,300,'#5258F2');
+				this.drawLib.outRect(this.ctx,width/2,0,width/4,height,'#9e7cd4','#3f2072');
+				this.drawLib.text(this.ctx,'3',width/2 +100,270,300,'#3f2072');
 			}
 			else{
 				this.drawLib.outRect(this.ctx,width/2,0,width/4,height,'#595959','#2E2E2E');
-				this.drawLib.text(this.ctx,'3',width/2 +100,220,300,'#878787');
+				this.drawLib.text(this.ctx,'3',width/2 +100,270,300,'#878787');
 			} 
 			//player4
 			if(pad[3] != undefined){
-				this.drawLib.outRect(this.ctx,width - width/4,0,width/4,height,'purple','#120011');
-				this.drawLib.text(this.ctx,'4',width - width/4 +100,220,300,'#FA6EF8');
+				this.drawLib.outRect(this.ctx,width - width/4,0,width/4,height,'#73cfc1','#137264');
+				this.drawLib.text(this.ctx,'4',width - width/4 +100,270,300,'#137264');
 			}
 			else{
 				this.drawLib.outRect(this.ctx,width - width/4,0,width/4,height,'#595959','#2E2E2E');
-				this.drawLib.text(this.ctx,'4',width - width/4 +100,220,300,'#878787');
+				this.drawLib.text(this.ctx,'4',width - width/4 +100,270,300,'#878787');
 			}
 			
 			if(pad[0] != undefined){
 				this.drawLib.Shadowrect(this.ctx,0,height/2 + 100,width,100, '#fff');
 				this.drawLib.text(this.ctx,"Press any button on your controller to join and  [p] or START to Play!",width/2, height/2 + 165, 45, '#000');
+			}
+			
+			if(pad[0] != undefined ){
+				this.drawLib.fadeText(this.ctx,'Press B to return to the title Screen',width/2,40,25,'#fff',this.fadeAlph);
+			}
+			else{
+				this.drawLib.fadeText(this.ctx,'Press [backspace] to return to the title Screen',width/2,40,25,'#fff',this.fadeAlph);
 			}
 			
 		}
@@ -701,6 +713,22 @@ app.main = {
 		var pad = navigator.getGamepads();
 		this.startButtonTick --;
 		
+		if(this.fadeout == "TRUE"){
+			this.fadeAlph -= .01;
+		}
+		if(this.fadeout == "FALSE"){
+			this.fadeAlph += .01;
+		}
+		if(this.fadeAlph < 0.1 ){
+			this.fadeout = "FALSE";
+		
+		}
+		if(this.fadeAlph >= 1){
+			this.fadeout = "TRUE";
+		}
+		//console.log(this.fadeAlph);
+		
+		
 		if(this.gamestate == "TITLE"){
 		this.titleTick --;
 		var makeSound = false;
@@ -811,7 +839,23 @@ app.main = {
 					}
 				}
 			}
-		
+			for(var i = 0; i < pad.length; i++){
+				if(pad[i] != undefined && pad[i].buttons[1].pressed){
+					if(this.startButtonTick < 0 ){
+						this.reset("TITLE");
+						this.startButtonTick = 30;
+						
+					}
+				}
+			}
+			if(app.keydown[8]){
+			
+				if(this.startButtonTick < 0 ){
+						this.reset("TITLE");
+						this.startButtonTick = 30;
+						
+					}
+		}
 		}
 		
 		if(makeSound){
@@ -829,7 +873,7 @@ app.main = {
 			this.speed = 150 + this.time;// * 0.5;
 			for(var i = 0; i < this.players.length; i++){
 				
-				this.players[i].update(this.dt, this.speed);
+				this.players[i].update(this.dt);
 				while(this.players[i].y < 200)
 				{
 					for(var j = 0; j < this.players.length; j++)

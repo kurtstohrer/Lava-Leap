@@ -25,6 +25,15 @@ app.drawLib = {
 		ctx.fillText(string, x, y);
 		ctx.restore();
 	},
+	fadeText: function(ctx, string, x, y, size, col,alph)
+	{
+		ctx.save();
+		ctx.globalAlpha=alph;
+		ctx.font = 'bold ' + size + 'px Monospace';
+		ctx.fillStyle = col;
+		ctx.fillText(string, x, y);
+		ctx.restore();
+	},
 	outlinedText: function(ctx, string, x, y, size, col, out)
 	{
 		ctx.save();
