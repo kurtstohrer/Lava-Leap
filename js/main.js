@@ -229,7 +229,7 @@ app.main = {
 		//loop through and create a player for each gamepad
 		for(var i = 0; i < numPlayers; i++)
 		{
-			this.players.push(new Player(this.WIDTH * (i+1)/(numPlayers+1), 500, this.colors[i], i));
+			this.players.push(new Player(this.WIDTH * (i+1)/(numPlayers+1), 500, this.playerImages[i], i));
 		}
 		
 		this.platformArrays.push(this.platforms1);

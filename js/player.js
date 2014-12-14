@@ -90,7 +90,6 @@ Player.prototype.update = function update(dt)
 		
 		if(jump){
 		
-			console.log("in");
 			this.jumping = true;
 			this.runningLeft = false;
 			this.runningRight = false;
@@ -108,7 +107,6 @@ Player.prototype.update = function update(dt)
 			this.yVelocity = Math.sqrt(this.y - 200) * -65;
 			this.canJump = false;
 			this.jumping = true;
-			console.log("called");
 			this.canHoldJump = false;
 		}
 		
@@ -288,7 +286,6 @@ Player.prototype.draw = function draw(ctx)
 			else{
 				
 				if(this.idle){
-
 					ctx.drawImage(
 						this.images[0], //image
 						this.imgIndex * 32, //x of the sprite sheet
@@ -363,7 +360,7 @@ Player.prototype.animate = function(){
 				// if we have reached the end of the sprite sheet
 				// if not, increment the imgIndex
 				if(this.imgIndex >= 3)
-				{console.log(this.imgIndex);
+				{
 					// reset the imgIndex
 					this.imgIndex = 0;
 				}
