@@ -40,7 +40,7 @@ app.Platform = function()
 		
 		if(this.type == "sticky"){
 		
-			this.ticsPerFrame = 120;
+			this.ticsPerFrame = 10;
 		}
 		else if(this.type == "ghost"){
 		
@@ -244,10 +244,17 @@ app.Platform = function()
 				this.counter = 0;
 				this.animating = false;
 			}
-			else if(this.type == "sticky" && this.imgIndex == 2)
+			else if(this.type == "sticky")
 			{
 				// reset the counter, imgIndex and turn animating off
-				this.imgIndex = 2;
+				if(this.y >= 600){
+				
+					this.imgIndex = 2;
+				}
+				else if(this.y >= 300){
+				
+					this.imgIndex = 1;
+				}
 				this.counter = 0;
 				this.animating = false;
 			}

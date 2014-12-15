@@ -17,8 +17,8 @@ var Player = function Player(x, y, images, controls){
 	this.controller = controls;
 	this.gravity = 40;
 	this.ground = 300;
-	this.width = 32;
-	this.height = 32;
+	this.width = 40;
+	this.height = 40;
 	this.canJump = false;
 	this.canHoldJump = false;
 	this.active = true;
@@ -217,10 +217,7 @@ Player.prototype.update = function update(dt)
 };
 
 //draw
-Player.prototype.draw = function draw(ctx)
-{
-	var width = 32;
-	var height = 32;
+Player.prototype.draw = function draw(ctx){
 	
 	if(this.active)
 	{
@@ -245,8 +242,8 @@ Player.prototype.draw = function draw(ctx)
 						32, // height of the crop
 						-this.x - 32, // x coord of where to draw
 						this.y, // y coord of where to draw
-						width, // width to draw the image
-						height); // height to draw the image
+						this.width, // width to draw the image
+						this.height); // height to draw the image
 				}
 				else if(this.runningLeft){
 				
@@ -258,8 +255,8 @@ Player.prototype.draw = function draw(ctx)
 						32, // height of the crop
 						-this.x - 32, // x coord of where to draw
 						this.y, // y coord of where to draw
-						width, // width to draw the image
-						height); // height to draw the image
+						this.width, // width to draw the image
+						this.height); // height to draw the image
 				}
 				else if(this.jumping){
 					ctx.drawImage(
@@ -270,8 +267,8 @@ Player.prototype.draw = function draw(ctx)
 						32, // height of the crop
 						-this.x - 32, // x coord of where to draw
 						this.y, // y coord of where to draw
-						width, // width to draw the image
-						height); // height to draw the image
+						this.width, // width to draw the image
+						this.height); // height to draw the image
 				}
 				else if(this.falling){
 					ctx.drawImage(
@@ -282,8 +279,8 @@ Player.prototype.draw = function draw(ctx)
 						32, // height of the crop
 						-this.x - 32, // x coord of where to draw
 						this.y, // y coord of where to draw
-						width, // width to draw the image
-						height); // height to draw the image
+						this.width, // width to draw the image
+						this.height); // height to draw the image
 				}
 			}
 			else{
@@ -297,8 +294,8 @@ Player.prototype.draw = function draw(ctx)
 						32, // height of the crop
 						this.x, // x coord of where to draw
 						this.y, // y coord of where to draw
-						width, // width to draw the image
-						height); // height to draw the image
+						this.width, // width to draw the image
+						this.height); // height to draw the image
 				}
 				else if(this.runningRight){
 				
@@ -310,8 +307,8 @@ Player.prototype.draw = function draw(ctx)
 						32, // height of the crop
 						this.x, // x coord of where to draw
 						this.y, // y coord of where to draw
-						width, // width to draw the image
-						height); // height to draw the image
+						this.width, // width to draw the image
+						this.height); // height to draw the image
 				}
 				else if(this.jumping){
 				
@@ -323,8 +320,8 @@ Player.prototype.draw = function draw(ctx)
 						32, // height of the crop
 						this.x, // x coord of where to draw
 						this.y, // y coord of where to draw
-						width, // width to draw the image
-						height); // height to draw the image
+						this.width, // width to draw the image
+						this.height); // height to draw the image
 				}
 				else if(this.falling){
 				
@@ -336,8 +333,8 @@ Player.prototype.draw = function draw(ctx)
 						32, // height of the crop
 						this.x, // x coord of where to draw
 						this.y, // y coord of where to draw
-						width, // width to draw the image
-						height); // height to draw the image
+						this.width, // width to draw the image
+						this.height); // height to draw the image
 				}
 			}
 			

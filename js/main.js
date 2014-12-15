@@ -37,11 +37,14 @@ app.main = {
 	
 	platformImage: undefined,
 	backImage: undefined,
+	backImages: [],
+	islandImage: undefined,
 	gradients: [],
 	imgIndex: 0,
 	imgOpacityDown: 1.0,
 	imgOpacityUp: 0.0,
 	backSpeed:0,
+	islandSpeed:0,
 	parallaxWallBack: undefined,
 	parallaxWallFront: undefined,
 	parallaxBackSpeed:0,
@@ -157,9 +160,20 @@ app.main = {
 		this.platformImage = new Image();
 		this.platformImage.src = "img/lavatile.png";
 		
-		this.backImage = new Image();
-		this.backImage.src = "img/largewalltile-scaled.png";
+		this.islandImage = new Image();
+		this.islandImage.src = "img/parrallax_background_background.png";
 		
+		for(var i = 0; i < 4; i++){
+		
+			this.backImages.push(new Image());
+		}
+		
+		this.backImages[0].src = "img/largewalltile-scaled.png";
+		this.backImages[1].src = "img/largewalltile-scaled-v2.png";
+		this.backImages[2].src = "img/largewalltile-scaled-v3.png";
+		this.backImages[3].src = "img/parrallax_background_foreground.png";
+		
+		console.log(this.backImages);
 		for(var i = 0; i < 4; i++){
 		
 			this.gradients.push(new Image());
@@ -482,7 +496,7 @@ app.main = {
 			//BEGIN CHAD
 			//background scrolling
 			//if the background moves off screen, reset it
-			if(this.backSpeed >= 1080){
+			if(this.backSpeed >= 1080*4){
 				
 				this.backSpeed = 0;
 			}
@@ -494,10 +508,13 @@ app.main = {
 			
 			if(this.parallaxFrontSpeed >= 1500){
 				
-				//this.backScrollIndex++;
 				this.parallaxFrontSpeed = 0;
 			}
 			
+			if(this.islandSpeed >= 1080){
+				
+				this.islandSpeed = 0;
+			}
 			
 			//END CHAD
 			
@@ -506,12 +523,21 @@ app.main = {
 			this.backSpeed += this.speed * this.dt;
 			this.parallaxBackSpeed += (this.speed+20) * this.dt;
 			this.parallaxFrontSpeed += (this.speed+50) * this.dt;
+			this.islandSpeed += (this.speed-45) * this.dt;
 			
 			//draw backgrounds
-			this.ctx.drawImage(this.backImage, 0, this.backSpeed - 1080);
-			this.ctx.drawImage(this.backImage, 0, this.backSpeed);
+			if(this.backSpeed >= 1080 * 2){
 			
-			/*
+				this.ctx.drawImage(this.islandImage, 1000, this.islandSpeed-1080);
+				this.ctx.drawImage(this.islandImage, 1000, this.islandSpeed);
+			}
+			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed - (1080 * 4));
+			this.ctx.drawImage(this.backImages[3], 0, this.backSpeed - (1080 * 3));
+			this.ctx.drawImage(this.backImages[2], 0, this.backSpeed - (1080 * 2));
+			this.ctx.drawImage(this.backImages[1], 0, this.backSpeed - 1080);
+			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed);
+			
+			/* gradient bakcground
 			//stay between 1 and 0
 			if(this.imgOpacityDown < 0){
 				this.imgOpacityDown = 0;
@@ -586,9 +612,6 @@ app.main = {
 				}
 			}
 			
-			
-			
-			
 			//loop through and draw the players
 			for(var i = 0; i < this.players.length; i++){
 				
@@ -615,7 +638,7 @@ app.main = {
 		if(this.gamestate == "SINGLE"){
 			
 			
-			if(this.backSpeed >= 1080){
+			if(this.backSpeed >= 1080 * 4){
 				
 				this.backSpeed = 0;
 			}
@@ -627,10 +650,13 @@ app.main = {
 			
 			if(this.parallaxFrontSpeed >= 1500){
 				
-				//this.backScrollIndex++;
 				this.parallaxFrontSpeed = 0;
 			}
 			
+			if(this.islandSpeed >= 1080){
+				
+				this.islandSpeed = 0;
+			}
 			
 			//END CHAD
 			
@@ -639,11 +665,92 @@ app.main = {
 			this.backSpeed += this.speed * this.dt;
 			this.parallaxBackSpeed += (this.speed+20) * this.dt;
 			this.parallaxFrontSpeed += (this.speed+50) * this.dt;
+			this.islandSpeed += (this.speed-45) * this.dt;
 			
 			//draw backgrounds
-			this.ctx.drawImage(this.backImage, 0, this.backSpeed - 1080);
-			this.ctx.drawImage(this.backImage, 0, this.backSpeed);
+			if(this.backSpeed >= 1080 * 2){
 			
+				this.ctx.drawImage(this.islandImage, 1000, this.islandSpeed-1080);
+				this.ctx.drawImage(this.islandImage, 1000, this.islandSpeed);
+			}
+			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed - (1080 * 4));
+			this.ctx.drawImage(this.backImages[3], 0, this.backSpeed - (1080 * 3));
+			this.ctx.drawImage(this.backImages[2], 0, this.backSpeed - (1080 * 2));
+			this.ctx.drawImage(this.backImages[1], 0, this.backSpeed - 1080);
+			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed);
+			
+			/* gradient bakcground 
+			//stay between 1 and 0
+			if(this.imgOpacityDown < 0){
+				this.imgOpacityDown = 0;
+				this.imgIndex++;
+				this.imgSwitch = !this.imgSwitch;
+			}
+			else if(this.imgOpacityDown > 1){
+				this.imgOpacityDown = 1;
+				this.imgIndex++;
+				this.imgSwitch = !this.imgSwitch;
+			}
+			
+			if(this.imgOpacityUp > 1){
+				this.imgOpacityUp = 1;
+			}
+			else if(this.imgOpacityUp < 0a){
+				this.imgOpacityUp = 0;
+			}
+			
+			//if the direction is switched
+			if(!this.imgSwitch){
+			
+				this.imgOpacityDown -= .015;
+				this.imgOpacityUp += .015;
+			}
+			else{
+				
+				var temp = this.imgOpacityDown;
+				
+				this.imgOpacityDown = this.imgOpacityUp;
+				this.imgOpacityUp = temp;
+				this.imgSwitch = !this.imgSwitch;
+			}
+			
+			
+			//draw the images in order {first image then second image
+			this.ctx.save();
+			this.ctx.globalAlpha = this.imgOpacityDown;
+			this.ctx.drawImage(this.gradients[this.imgIndex], 0, 0);
+			this.ctx.restore();
+			
+			this.ctx.save();
+			this.ctx.globalAlpha = this.imgOpacityUp;
+			
+			//loop back to the first image if the above is the last image in the array
+			
+			if(this.imgIndex + 1 >= 4){
+			
+				//this.ctx.drawImage(this.gradients[0], 0, 0);
+				this.imgIndex = 0;
+			}
+			else{
+			
+				this.ctx.drawImage(this.gradients[this.imgIndex + 1], 0, 0);
+			}
+			
+			this.ctx.restore();
+			*/
+			
+			if(this.startPlatform.active)
+			{
+				this.startPlatform.draw(this.ctx);
+			}
+			for(var j = 0; j < this.platformArrays.length; j++)
+			{
+				var platforms = this.platformArrays[j];
+				for(var i = 0; i < platforms.length; i++)
+				{
+					platforms[i].draw(this.ctx, 1);
+				}
+			}			
 			
 			if(this.startPlatform.active)
 			{
@@ -917,7 +1024,6 @@ app.main = {
 		if(this.fadeAlph >= 1){
 			this.fadeout = "TRUE";
 		}
-		//console.log(this.fadeAlph);
 		
 		
 		if(this.gamestate == "TITLE"){
