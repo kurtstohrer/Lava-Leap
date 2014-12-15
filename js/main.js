@@ -32,6 +32,9 @@ app.main = {
 	startPlatform: undefined,
 	gamestate: undefined,
 	ticks: 0,
+	animationTics: 0,
+	animationIndex: 0,
+	ticsPerFrame: 10,
 	speed: 150,
 	drawLib:undefined,
 	
@@ -44,7 +47,6 @@ app.main = {
 	imgOpacityDown: 1.0,
 	imgOpacityUp: 0.0,
 	backSpeed:0,
-	islandSpeed:0,
 	parallaxWallBack: undefined,
 	parallaxWallFront: undefined,
 	parallaxBackSpeed:0,
@@ -173,7 +175,6 @@ app.main = {
 		this.backImages[2].src = "img/largewalltile-scaled-v3.png";
 		this.backImages[3].src = "img/parrallax_background_foreground.png";
 		
-		console.log(this.backImages);
 		for(var i = 0; i < 4; i++){
 		
 			this.gradients.push(new Image());
@@ -190,7 +191,7 @@ app.main = {
 		this.parallaxWallFront.src = "img/parallax wall front shaded.png";
 		
 		this.lavaImage = new Image();
-		this.lavaImage.src = "img/lava_mid.png";
+		this.lavaImage.src = "img/animated lava.png";
 		
 		this.loadImgs();
 		
@@ -209,9 +210,8 @@ app.main = {
 		platformImage.src = "img/ghosttile.png";
 		this.platformImages.push(platformImage);
 		
-		
 		platformImage = new Image();
-		platformImage.src = "img/ghosttile vanishing.png";
+		platformImage.src = "img/ghosttile vanishing full animation.png";
 		this.platformImages.push(platformImage);
 		
 		//moving tiles
@@ -511,11 +511,6 @@ app.main = {
 				this.parallaxFrontSpeed = 0;
 			}
 			
-			if(this.islandSpeed >= 1080){
-				
-				this.islandSpeed = 0;
-			}
-			
 			//END CHAD
 			
 			
@@ -523,21 +518,15 @@ app.main = {
 			this.backSpeed += this.speed * this.dt;
 			this.parallaxBackSpeed += (this.speed+20) * this.dt;
 			this.parallaxFrontSpeed += (this.speed+50) * this.dt;
-			this.islandSpeed += (this.speed-45) * this.dt;
 			
-			//draw backgrounds
-			if(this.backSpeed >= 1080 * 2){
-			
-				this.ctx.drawImage(this.islandImage, 1000, this.islandSpeed-1080);
-				this.ctx.drawImage(this.islandImage, 1000, this.islandSpeed);
-			}
+			this.ctx.drawImage(this.islandImage, 400, 0);
 			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed - (1080 * 4));
 			this.ctx.drawImage(this.backImages[3], 0, this.backSpeed - (1080 * 3));
 			this.ctx.drawImage(this.backImages[2], 0, this.backSpeed - (1080 * 2));
 			this.ctx.drawImage(this.backImages[1], 0, this.backSpeed - 1080);
 			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed);
 			
-			/* gradient bakcground
+			//gradient bakcground
 			//stay between 1 and 0
 			if(this.imgOpacityDown < 0){
 				this.imgOpacityDown = 0;
@@ -580,7 +569,7 @@ app.main = {
 			//draw the images in order {first image then second image
 			this.ctx.save();
 			this.ctx.globalAlpha = this.imgOpacityDown;
-			this.ctx.drawImage(this.gradients[this.imgIndex], 0, 0);
+			this.ctx.drawImage(this.gradients[this.imgIndex], 0, 50);
 			this.ctx.restore();
 			
 			this.ctx.save();
@@ -593,11 +582,11 @@ app.main = {
 			}
 			else{
 			
-				this.ctx.drawImage(this.gradients[this.imgIndex + 1], 0, 0);
+				this.ctx.drawImage(this.gradients[this.imgIndex + 1], 0, 50);
 			}
 			
 			this.ctx.restore();
-			*/
+			//end gradients
 			
 			if(this.startPlatform.active)
 			{
@@ -617,10 +606,25 @@ app.main = {
 				
 				this.players[i].draw(this.ctx);
 			}
+			
+			//draw lava
 			for(var i = 0; i < 1920; i+=32){
 			
-				this.ctx.drawImage(this.lavaImage, i, this.HEIGHT-20);
+				//this.ctx.drawImage(this.lavaImage, i, this.HEIGHT-20);
+				
+				this.ctx.drawImage(
+						this.lavaImage, //image
+						this.animationIndex * 32, //x of the sprite sheet
+						0, // y of the sprite sheet
+						32, // width of the crop
+						20, // height of the crop
+						i, // x coord of where to draw
+						this.HEIGHT-20, // y coord of where to draw
+						32, // width to draw the image
+						20); // height to draw the image
 			}
+			
+			this.Animate();
 			
 			this.ctx.drawImage(this.parallaxWallBack, 0, this.parallaxBackSpeed - 1500);
 			this.ctx.drawImage(this.parallaxWallBack, 0, this.parallaxBackSpeed);
@@ -635,6 +639,7 @@ app.main = {
 			this.ctx.drawImage(this.parallaxWallFront, -1920, this.parallaxFrontSpeed);
 			this.ctx.restore();
 		}
+		
 		if(this.gamestate == "SINGLE"){
 			
 			
@@ -653,33 +658,20 @@ app.main = {
 				this.parallaxFrontSpeed = 0;
 			}
 			
-			if(this.islandSpeed >= 1080){
-				
-				this.islandSpeed = 0;
-			}
-			
-			//END CHAD
-			
-			
 			//update background pos
 			this.backSpeed += this.speed * this.dt;
 			this.parallaxBackSpeed += (this.speed+20) * this.dt;
 			this.parallaxFrontSpeed += (this.speed+50) * this.dt;
-			this.islandSpeed += (this.speed-45) * this.dt;
 			
 			//draw backgrounds
-			if(this.backSpeed >= 1080 * 2){
-			
-				this.ctx.drawImage(this.islandImage, 1000, this.islandSpeed-1080);
-				this.ctx.drawImage(this.islandImage, 1000, this.islandSpeed);
-			}
+			this.ctx.drawImage(this.islandImage, 400, 0);
 			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed - (1080 * 4));
 			this.ctx.drawImage(this.backImages[3], 0, this.backSpeed - (1080 * 3));
 			this.ctx.drawImage(this.backImages[2], 0, this.backSpeed - (1080 * 2));
 			this.ctx.drawImage(this.backImages[1], 0, this.backSpeed - 1080);
 			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed);
 			
-			/* gradient bakcground 
+			// gradient bakcground 
 			//stay between 1 and 0
 			if(this.imgOpacityDown < 0){
 				this.imgOpacityDown = 0;
@@ -695,7 +687,7 @@ app.main = {
 			if(this.imgOpacityUp > 1){
 				this.imgOpacityUp = 1;
 			}
-			else if(this.imgOpacityUp < 0a){
+			else if(this.imgOpacityUp < 0){
 				this.imgOpacityUp = 0;
 			}
 			
@@ -718,7 +710,7 @@ app.main = {
 			//draw the images in order {first image then second image
 			this.ctx.save();
 			this.ctx.globalAlpha = this.imgOpacityDown;
-			this.ctx.drawImage(this.gradients[this.imgIndex], 0, 0);
+			this.ctx.drawImage(this.gradients[this.imgIndex], 0, 200);
 			this.ctx.restore();
 			
 			this.ctx.save();
@@ -728,16 +720,15 @@ app.main = {
 			
 			if(this.imgIndex + 1 >= 4){
 			
-				//this.ctx.drawImage(this.gradients[0], 0, 0);
 				this.imgIndex = 0;
 			}
 			else{
 			
-				this.ctx.drawImage(this.gradients[this.imgIndex + 1], 0, 0);
+				this.ctx.drawImage(this.gradients[this.imgIndex + 1], 0, 200);
 			}
 			
 			this.ctx.restore();
-			*/
+			//end gradients
 			
 			if(this.startPlatform.active)
 			{
@@ -765,19 +756,29 @@ app.main = {
 				}
 			}
 			
-			
-			
-			
-			
-			
 			//loop through and draw the players
 			
 				this.drawLib.text(this.ctx,this.singleClock,this.WIDTH/2, this.HEIGHT - 50, 50, '#fff');
 				this.players[0].draw(this.ctx);
-				for(var i = 0; i < 1920; i+=32){
+				
+			//draw lava
+			for(var i = 0; i < 1920; i+=32){
 			
-				this.ctx.drawImage(this.lavaImage, i, this.HEIGHT-20);
+				//this.ctx.drawImage(this.lavaImage, i, this.HEIGHT-20);
+				
+				this.ctx.drawImage(
+						this.lavaImage, //image
+						this.animationIndex * 32, //x of the sprite sheet
+						0, // y of the sprite sheet
+						32, // width of the crop
+						20, // height of the crop
+						i, // x coord of where to draw
+						this.HEIGHT-20, // y coord of where to draw
+						32, // width to draw the image
+						20); // height to draw the image
 			}
+			
+			this.Animate();
 			
 			this.ctx.drawImage(this.parallaxWallBack, 0, this.parallaxBackSpeed - 1500);
 			this.ctx.drawImage(this.parallaxWallBack, 0, this.parallaxBackSpeed);
@@ -1174,9 +1175,9 @@ app.main = {
 		}
 		
 		if(makeSound){
-			var sfx = new Audio("sfx.mp3");
+			var sfx = new Audio("music/sfx.mp3");
 			sfx.volume = 0.4;
-			//sfx.play();
+			sfx.play();
 		}
 		
 		if(this.gamestate == "GAME" || this.gamestate == "SINGLE")
@@ -1213,7 +1214,7 @@ app.main = {
 		
 			if(this.platforms1[0].y + this.PLATFORM_DIFFERENCE > this.startPlatform.y && this.startPlatform.active)
 			{
-				this.startPlatform.update(this.dt, this.speed);
+				//this.startPlatform.update(this.dt, this.speed);
 			}
 
 			for(var j = 0; j < this.platformArrays.length; j++)
@@ -1236,19 +1237,19 @@ app.main = {
 					var px = Math.random() * 800 + platforms[highestindex].x - 400;
 					var randType = Math.random();
 					var typeIndex = 0;
-					if(randType < 0.10)
+					if(randType <= 0.10)
 					{
 						typeIndex = 2;
 					}
-					else if(randType < 0.30)
+					else if(randType <= 0.20)
 					{
 						typeIndex = 3;
 					}
-					else if(randType < 0.40)
+					else if(randType <= 0.30)
 					{
 						typeIndex = 4;
 					}
-					else if(randType < 0.50)
+					else if(randType <= 0.40)
 					{
 						typeIndex = 5;
 					}
@@ -1472,16 +1473,36 @@ app.main = {
 		this.greyIdle.src = "img/multiplayer/greyIdleXL.png";
 	},
 	
-    
+    Animate: function(){
+
+		// increment tics
+		this.animationTics += 1;
+		// if tics is >= the tics allowed per frame
+		// this controls the speed of the animation
+		if(this.animationTics >= this.ticsPerFrame)
+		{
+			// reset tics
+			this.animationTics = 0;
+			
+			// if we have reached the end of the sprite sheet
+			// if not, increment the imgIndex
+			if(this.animationIndex >= 2)
+			{
+				// reset the imgIndex
+				this.animationIndex = 0;
+			}
+			else this.animationIndex++;
+		}
+	}
     
 };
 
 window.onload = function() {
 	console.log("init called");
 	
-	var audio = new Audio("thefloorislava.mp3");
+	var audio = new Audio("music/thefloorislava.mp3");
 	audio.loop = true;
-	//audio.play();
+	audio.play();
 	
 	window.addEventListener("keydown", function(e){
 		//console.log("keydown " + e.keyCode);
