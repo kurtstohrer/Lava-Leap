@@ -74,6 +74,15 @@ app.main = {
 	insGhost:undefined,
 	insState: undefined,
 	insTick: 10,
+	
+	blueIdle: undefined,
+	greenIdle:undefined,
+	purpleIdle:undefined,
+	tealIdle:undefined,
+	greyIdle:undefined,
+	charXCrop: undefined,
+	mainAnimateTick: undefined,
+	mainTickLength:undefined,
     
     // methods
 	init : function() {
@@ -214,6 +223,9 @@ app.main = {
 		this.gamestate = "TITLE";
 		this.menuState = 1;
 		this.insState = 1;
+		this.charXCrop = 0;
+		this.mainTickLength = 15;
+		this.mainAnimateTick = this.mainTickLength;
 		this.update();
 	},
 	
@@ -264,6 +276,7 @@ app.main = {
 		this.gamestate = gamestate;
 		this.menuState = 1;
 		this.insState = 1;
+		this.charXCrop = 0;
 	},
 		
 	draw: function()
@@ -306,65 +319,142 @@ app.main = {
 		
 		if(this.gamestate == "MAIN"){
 			
+			var charSize= 256;
+			var charY= 385;
+			
 			
 			//player1
 			if(pad[0] != undefined ){
 				this.drawLib.outRect(this.ctx,0,0,width/4,height,'#97a5d1','#1c3170');
 				this.drawLib.text(this.ctx,'1',100,270,300,'#1c3170');
+				this.ctx.drawImage(this.blueIdle, //image
+						this.charXCrop, //x of the sprite sheet
+						0,// y of the sprite sheet
+						256, // width of the crop
+						256, // height of the crop
+						125, // x coord of where to draw
+						charY, // y coord of where to draw
+						charSize, // width to draw the image
+						charSize);
+						
 			}
 			else{
 				this.drawLib.outRect(this.ctx,0,0,width/4,height,'#595959','#2E2E2E');
 				this.drawLib.text(this.ctx,'1',100,270,300,'#878787');
-				this.drawLib.rect(this.ctx, width/8 - 37.5, 450, 75, 75, '#878787');
-				this.drawLib.rect(this.ctx, width/8 - 37.5, 526, 75, 75, '#878787');
-				this.drawLib.rect(this.ctx, width/8 - 113.5, 526, 75, 75, '#878787');
-				this.drawLib.rect(this.ctx, width/8 + 38.5, 526, 75, 75, '#878787');
-				this.drawLib.text(this.ctx,'W',width/8,495,50,'#000000');
-				this.drawLib.text(this.ctx,'Jump',width/8,515,20,'#000000');
-				this.drawLib.text(this.ctx,'S',width/8,571,50,'#000000');
-				this.drawLib.text(this.ctx,'A',width/8 - 76,571,50,'#000000');
-				this.drawLib.text(this.ctx,'Left',width/8 - 76,591,20,'#000000');
-				this.drawLib.text(this.ctx,'D',width/8 + 76,571,50,'#000000');
-				this.drawLib.text(this.ctx,'Right',width/8 + 76,591,20,'#000000');
+				this.drawLib.rect(this.ctx, width/8 - 37.5, 850, 75, 75, '#878787');
+				this.drawLib.rect(this.ctx, width/8 - 37.5, 926, 75, 75, '#878787');
+				this.drawLib.rect(this.ctx, width/8 - 113.5, 926, 75, 75, '#878787');
+				this.drawLib.rect(this.ctx, width/8 + 38.5, 926, 75, 75, '#878787');
+				this.drawLib.text(this.ctx,'W',width/8,895,50,'#000000');
+				this.drawLib.text(this.ctx,'Jump',width/8,915,20,'#000000');
+				this.drawLib.text(this.ctx,'S',width/8,971,50,'#000000');
+				this.drawLib.text(this.ctx,'A',width/8 - 76,971,50,'#000000');
+				this.drawLib.text(this.ctx,'Left',width/8 - 76,991,20,'#000000');
+				this.drawLib.text(this.ctx,'D',width/8 + 76,971,50,'#000000');
+				this.drawLib.text(this.ctx,'Right',width/8 + 76,991,20,'#000000');
+				this.ctx.drawImage(this.greyIdle, //image
+						this.charXCrop, //x of the sprite sheet
+						0,// y of the sprite sheet
+						256, // width of the crop
+						256, // height of the crop
+						125, // x coord of where to draw
+						charY, // y coord of where to draw
+						charSize, // width to draw the image
+						charSize);
 			}
 			//player2
 			if(pad[1] != undefined){
 				this.drawLib.outRect(this.ctx,width/4,0,width/4,height,'#69ab70','#16511c');
 				this.drawLib.text(this.ctx,'2',width/4 +100,270,300,'#16511c');
+					this.ctx.drawImage(this.greenIdle, //image
+						this.charXCrop, //x of the sprite sheet
+						0,// y of the sprite sheet
+						256, // width of the crop
+						256, // height of the crop
+						width/4 + 125, // x coord of where to draw
+						charY, // y coord of where to draw
+						charSize, // width to draw the image
+						charSize);
 			}
 			else{
 				this.drawLib.outRect(this.ctx,width/4,0,width/4,height,'#595959','#2E2E2E');
 				this.drawLib.text(this.ctx,'2',width/4 +100,270,300,'#878787');
-				this.drawLib.rect(this.ctx, width*3/8 - 37.5, 450, 75, 75, '#878787');
-				this.drawLib.rect(this.ctx, width*3/8 - 37.5, 526, 75, 75, '#878787');
-				this.drawLib.rect(this.ctx, width*3/8 - 113.5, 526, 75, 75, '#878787');
-				this.drawLib.rect(this.ctx, width*3/8 + 38.5, 526, 75, 75, '#878787');
-				this.drawLib.text(this.ctx,'8',width*3/8,495,50,'#000000');
-				this.drawLib.text(this.ctx,'Jump',width*3/8,515,20,'#000000');
-				this.drawLib.text(this.ctx,'5',width*3/8,571,50,'#000000');
-				this.drawLib.text(this.ctx,'4',width*3/8 - 76,571,50,'#000000');
-				this.drawLib.text(this.ctx,'Left',width*3/8 - 76,591,20,'#000000');
-				this.drawLib.text(this.ctx,'6',width*3/8 + 76,571,50,'#000000');
-				this.drawLib.text(this.ctx,'Right',width*3/8 + 76,591,20,'#000000');
-				this.drawLib.text(this.ctx,'(make sure NUM LOCK is on)',width*3/8,625,25,'#000000');
+				this.drawLib.rect(this.ctx, width*3/8 - 37.5, 850, 75, 75, '#878787');
+				this.drawLib.rect(this.ctx, width*3/8 - 37.5, 926, 75, 75, '#878787');
+				this.drawLib.rect(this.ctx, width*3/8 - 113.5, 926, 75, 75, '#878787');
+				this.drawLib.rect(this.ctx, width*3/8 + 38.5, 926, 75, 75, '#878787');
+				this.drawLib.text(this.ctx,'8',width*3/8,895,50,'#000000');
+				this.drawLib.text(this.ctx,'Jump',width*3/8,915,20,'#000000');
+				this.drawLib.text(this.ctx,'5',width*3/8,971,50,'#000000');
+				this.drawLib.text(this.ctx,'4',width*3/8 - 76,971,50,'#000000');
+				this.drawLib.text(this.ctx,'Left',width*3/8 - 76,991,20,'#000000');
+				this.drawLib.text(this.ctx,'6',width*3/8 + 76,971,50,'#000000');
+				this.drawLib.text(this.ctx,'Right',width*3/8 + 76,991,20,'#000000');
+				this.drawLib.text(this.ctx,'(make sure NUM LOCK is on)',width*3/8,1025,25,'#000000');
+				//this.drawLib.text(this.ctx,'2',width/4 +100,470,300,'#16511c');
+					this.ctx.drawImage(this.greyIdle, //image
+						this.charXCrop, //x of the sprite sheet
+						0,// y of the sprite sheet
+						256, // width of the crop
+						256, // height of the crop
+						width/4 + 125, // x coord of where to draw
+						charY, // y coord of where to draw
+						charSize, // width to draw the image
+						charSize);
 			}
 			//player3
 			if(pad[2] != undefined){
 				this.drawLib.outRect(this.ctx,width/2,0,width/4,height,'#9e7cd4','#3f2072');
 				this.drawLib.text(this.ctx,'3',width/2 +100,270,300,'#3f2072');
+				this.ctx.drawImage(this.greenIdle, //image
+						this.charXCrop, //x of the sprite sheet
+						0,// y of the sprite sheet
+						256, // width of the crop
+						256, // height of the crop
+						width/2 + 125, // x coord of where to draw
+						charY, // y coord of where to draw
+						charSize, // width to draw the image
+						charSize);
 			}
 			else{
 				this.drawLib.outRect(this.ctx,width/2,0,width/4,height,'#595959','#2E2E2E');
 				this.drawLib.text(this.ctx,'3',width/2 +100,270,300,'#878787');
+				this.ctx.drawImage(this.greyIdle, //image
+						this.charXCrop, //x of the sprite sheet
+						0,// y of the sprite sheet
+						256, // width of the crop
+						256, // height of the crop
+						width/2 + 125, // x coord of where to draw
+						charY, // y coord of where to draw
+						charSize, // width to draw the image
+						charSize);
 			} 
 			//player4
 			if(pad[3] != undefined){
 				this.drawLib.outRect(this.ctx,width - width/4,0,width/4,height,'#73cfc1','#137264');
 				this.drawLib.text(this.ctx,'4',width - width/4 +100,270,300,'#137264');
+				this.ctx.drawImage(this.tealIdle, //image
+						this.charXCrop, //x of the sprite sheet
+						0,// y of the sprite sheet
+						256, // width of the crop
+						256, // height of the crop
+						width - width/4 + 125, // x coord of where to draw
+						charY, // y coord of where to draw
+						charSize, // width to draw the image
+						charSize);
 			}
 			else{
 				this.drawLib.outRect(this.ctx,width - width/4,0,width/4,height,'#595959','#2E2E2E');
 				this.drawLib.text(this.ctx,'4',width - width/4 +100,270,300,'#878787');
+				this.ctx.drawImage(this.greyIdle, //image
+						this.charXCrop, //x of the sprite sheet
+						0,// y of the sprite sheet
+						256, // width of the crop
+						256, // height of the crop
+						width - width/4 + 125, // x coord of where to draw
+						charY, // y coord of where to draw
+						charSize, // width to draw the image
+						charSize);
 			}
 			
 			if(pad[0] != undefined){
@@ -927,6 +1017,19 @@ app.main = {
 		}
 		
 		if(this.gamestate == "MAIN"){
+			this.mainAnimateTick --;
+			
+			if(this.mainAnimateTick <= 0 ){
+				this.charXCrop += 256;
+				this.mainAnimateTick += this.mainTickLength;
+			
+			}
+			if(this.charXCrop >= 1024){
+				this.charXCrop = 0;
+			
+			}
+			
+			
 			if(app.keydown[80]){
 			
 				this.gamestate = "GAME";
@@ -1214,7 +1317,7 @@ app.main = {
 	
 	loadImgs: function(){
 	
-	
+	//instructions
 		this.insBackground = new Image();
 		this.insBackground.src = "img/instructions/INS.jpg";
 		
@@ -1245,6 +1348,22 @@ app.main = {
 		this.insGhost = new Image();
 		this.insGhost.src = "img/instructions/ghostPlat.png";
 	
+	//large Idle for select screen\
+	
+		this.blueIdle = new Image();
+		this.blueIdle.src = "img/multiplayer/blueIdleXL.png";
+		
+		this.greenIdle = new Image();
+		this.greenIdle.src = "img/multiplayer/greenIdleXL.png";
+		
+		this.purpleIdle = new Image();
+		this.purpleIdle.src = "img/multiplayer/purpleIdleXL.png";
+		
+		this.tealIdle = new Image();
+		this.tealIdle.src = "img/multiplayer/tealIdleXL.png";
+		
+		this.greyIdle = new Image();
+		this.greyIdle.src = "img/multiplayer/greyIdleXL.png";
 	},
 	
     
