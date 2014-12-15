@@ -60,6 +60,20 @@ app.main = {
 	singleClock:0,
 	fadeAlph: 1,
 	fadeout: undefined,
+	
+	//instuction screen images
+	insBackground: undefined,
+	insIntro: undefined,
+	insSingle: undefined,
+	insMulti: undefined,
+	insXcontrols: undefined,
+	insKcontrols:undefined,
+	insPlat:undefined,
+	insStick: undefined,
+	insTramp:undefined,
+	insGhost:undefined,
+	insState: undefined,
+	insTick: 10,
     
     // methods
 	init : function() {
@@ -155,6 +169,8 @@ app.main = {
 		this.lavaImage = new Image();
 		this.lavaImage.src = "img/lava_mid.png";
 		
+		this.loadImgs();
+		
 		//tramp tile
 		var platformImage = new Image();
 		platformImage.src = "img/jumpirontile_animated_v2.png";
@@ -197,6 +213,7 @@ app.main = {
 		
 		this.gamestate = "TITLE";
 		this.menuState = 1;
+		this.insState = 1;
 		this.update();
 	},
 	
@@ -246,6 +263,7 @@ app.main = {
 			
 		this.gamestate = gamestate;
 		this.menuState = 1;
+		this.insState = 1;
 	},
 		
 	draw: function()
@@ -256,19 +274,32 @@ app.main = {
 		
 		if(this.gamestate == "TITLE"){
 			
+		var titleAlpha = .7;	
 			this.ctx.drawImage(this.TitleScreen, 0, 0);
 		
 			if(this.menuState == 1){
-				this.drawLib.alpharect(this.ctx,635,395,260,40,"#fff",0.2 );
-			
+				
+				this.drawLib.alpharect(this.ctx,654,252,399,58,"#e86c1a",titleAlpha );
 			}
 			if(this.menuState == 2){
-				this.drawLib.alpharect(this.ctx,877,568,367,40,"#fff",0.2 );
+				this.drawLib.alpharect(this.ctx,864,471,359,58,"#e86c1a",titleAlpha );
 			
 			}
 			if(this.menuState == 3){
-				this.drawLib.alpharect(this.ctx,736,809,234,40,"#fff",0.2 );
+				
+				
+				this.drawLib.alpharect(this.ctx,649,672,387,57,"#e86c1a",titleAlpha);
 			
+			}
+			if(this.menuState == 4){
+				this.drawLib.alpharect(this.ctx,984,873,286,58,"#e86c1a",titleAlpha );
+			}
+			
+			if(pad[0] != undefined ){
+				this.drawLib.fadeText(this.ctx,'Use the Analog Stick or D-pad to Navigate and press A or START to select ',width/2,40,25,'#fff',this.fadeAlph);
+			}
+			else{
+				this.drawLib.fadeText(this.ctx,'Use the arrow keys to navigate and press [enter] to select',width/2,40,25,'#fff',this.fadeAlph);
 			}
 			
 		}
@@ -342,10 +373,10 @@ app.main = {
 			}
 			
 			if(pad[0] != undefined ){
-				this.drawLib.fadeText(this.ctx,'Press B to return to the title Screen',width/2,40,25,'#fff',this.fadeAlph);
+				this.drawLib.fadeText(this.ctx,'Press B to return to the main',width/2,40,25,'#fff',this.fadeAlph);
 			}
 			else{
-				this.drawLib.fadeText(this.ctx,'Press [backspace] to return to the title Screen',width/2,40,25,'#fff',this.fadeAlph);
+				this.drawLib.fadeText(this.ctx,'Press [backspace] to return to the main menu',width/2,40,25,'#fff',this.fadeAlph);
 			}
 			
 		}
@@ -610,6 +641,76 @@ app.main = {
 			
 			
 		}
+		if(this.gamestate == "INS"){
+		this.drawINS();
+		}
+	},
+	drawINS: function(){
+	
+		
+			var selectAlpha = 0.7;	
+			var width = this.WIDTH;
+			var height = this.HEIGHT;
+			var pad = navigator.getGamepads();
+			
+			this.ctx.drawImage(this.insBackground, 0, 0);
+		
+			if(this.insState == 1){
+					//intro
+					this.drawLib.alpharect(this.ctx,110,142,451,85,"#e86c1a",selectAlpha );
+					this.ctx.drawImage(this.insIntro, 800, 196,1000,714);
+		
+			}
+			if(this.insState == 2){
+					//singleplayer
+					this.drawLib.alpharect(this.ctx,110,255,451,85,"#e86c1a",selectAlpha );
+					this.ctx.drawImage(this.insSingle, 800, 196,1000,714);
+			}
+			if(this.insState == 3){
+				//multiplayer
+					this.drawLib.alpharect(this.ctx,110,367,451,85,"#e86c1a",selectAlpha );
+					this.ctx.drawImage(this.insMulti, 800, 196,1000,714);
+			}
+			if(this.insState == 4){
+				//platforms
+					this.drawLib.alpharect(this.ctx,110,480,451,85,"#e86c1a",selectAlpha );
+					this.ctx.drawImage(this.insPlat, 800, 196,1000,714);
+			}
+			if(this.insState == 5){
+				//bouncy	
+					this.drawLib.alpharect(this.ctx,110,590,451,85,"#e86c1a",selectAlpha );
+					this.ctx.drawImage(this.insTramp, 800, 196,1000,714);
+			}
+			if(this.insState == 6){
+				//ghost
+					this.drawLib.alpharect(this.ctx,110,703,451,85,"#e86c1a",selectAlpha );
+					this.ctx.drawImage(this.insGhost, 800, 196,1000,714);
+			}
+			if(this.insState == 7){
+				//sticky	
+					this.drawLib.alpharect(this.ctx,110,815,451,85,"#e86c1a",selectAlpha );
+					this.ctx.drawImage(this.insStick, 800, 196,1000,714);
+			}
+			if(this.insState == 8){
+				//controls	
+					this.drawLib.alpharect(this.ctx,110,928,451,85,"#e86c1a",selectAlpha );
+					if(pad[0] != undefined ){
+					this.ctx.drawImage(this.insXcontrols, 800, 196,1000,714);
+					}
+					else{
+						this.ctx.drawImage(this.insKcontrols, 800, 196,1000,714);
+					
+					}
+					
+			}
+			if(pad[0] != undefined ){
+				this.drawLib.fadeText(this.ctx,'Press B to return to the main menu',width - 300,40,25,'#fff',this.fadeAlph);
+			}
+			else{
+				this.drawLib.fadeText(this.ctx,'Press [backspace] to return to the main menu',width- 400,40,25,'#fff',this.fadeAlph);
+			}
+			
+		
 	},
 	
 	checkCollosions: function()
@@ -733,12 +834,12 @@ app.main = {
 		this.titleTick --;
 		var makeSound = false;
 		
-			if(this.menuState > 3 ){
+			if(this.menuState > 4 ){
 					this.menuState = 1;
 					
 			}
 			if(this.menuState < 1 ){
-					this.menuState = 3;
+					this.menuState = 4;
 					
 			}
 			
@@ -761,7 +862,7 @@ app.main = {
 					}
 					
 				}
-				if(pad[i] != undefined && pad[i].buttons[9].pressed){
+				if(pad[i] != undefined && pad[i].buttons[9].pressed || pad[i] != undefined && pad[i].buttons[0].pressed ){
 							if(this.menuState == 1){
 								if(this.startButtonTick < 0 ){
 									
@@ -782,6 +883,11 @@ app.main = {
 							}
 							if(this.menuState == 3){
 								
+								if(this.startButtonTick < 0 ){
+									this.gamestate = "INS";
+									this.startButtonTick = 30;
+									makeSound=true;
+								}
 							}
 					
 				}
@@ -813,7 +919,7 @@ app.main = {
 					
 				}
 				if(this.menuState == 3){
-					
+					this.gamestate = "INS";
 				}
 				
 			}
@@ -1033,8 +1139,112 @@ app.main = {
 		
 		}
 		
+		if(this.gamestate == "INS"){
+		this.insTick --;
+		var makeSound = false;
+		
+			if(this.insState > 8 ){
+					this.insState = 1;
+					
+			}
+			if(this.insState < 1 ){
+					this.insState = 8;
+					
+			}
+			
+			for(var i = 0; i < pad.length; i++)
+			{
+				if(pad[i] != undefined && ((pad[i].axes[1] > 0.2) || (pad[i].buttons[13].pressed))){
+					if(this.insTick <=0 ){
+						this.insState ++;
+						this.insTick = 15;
+						console.log(this.insState);
+						makeSound=true;
+					}
+					
+				}
+				if(pad[i] != undefined && ((pad[i].axes[1] < -0.2) || (pad[i].buttons[12].pressed))){
+					if(this.insTick <=0 ){
+						this.insState --;
+						this.insTick = 15;
+						makeSound=true;
+					}
+					
+				}
+				if(pad[i] != undefined && pad[i].buttons[1].pressed){
+					if(this.startButtonTick < 0 ){
+						this.reset("TITLE");
+						this.startButtonTick = 30;
+						
+					}
+				}
+		
+			}
+			if(app.keydown[38]){
+			if(this.insTick <=0 ){
+						this.insState --;
+						this.insTick = 15;
+						makeSound=true;
+					}
+				
+			}
+			if(app.keydown[40]){
+				if(this.insTick <=0 ){
+						this.insState ++;
+						this.insTick = 15;
+						makeSound=true;
+					}
+				
+			}
+			if(app.keydown[8]){
+			
+				if(this.startButtonTick < 0 ){
+						this.reset("TITLE");
+						this.startButtonTick = 30;
+						
+					}
+		}
+			
+		
+		}
+		
 		this.checkCollosions()
 		this.draw();
+	},
+	
+	loadImgs: function(){
+	
+	
+		this.insBackground = new Image();
+		this.insBackground.src = "img/instructions/INS.jpg";
+		
+		this.insIntro= new Image();
+		this.insIntro.src = "img/instructions/intro.png";
+		
+		this.insSingle = new Image();
+		this.insSingle.src = "img/instructions/singleplayer.png";
+		
+		this.insMulti= new Image();
+		this.insMulti.src = "img/instructions/multiplayer.png";
+		
+		this.insXcontrols = new Image();
+		this.insXcontrols.src = "img/instructions/controls.png";
+		
+		this.insKcontrols = new Image();
+		this.insKcontrols.src = "img/instructions/keycontrols.png";
+		
+	   this. insPlat = new Image();
+		this.insPlat.src = "img/instructions/normPlat.png";
+		
+	   this. insStick = new Image();
+		this.insStick.src = "img/instructions/stickyPlat.png";
+		
+		this.insTramp= new Image();
+		this.insTramp.src = "img/instructions/trampPlat.png";
+		
+		this.insGhost = new Image();
+		this.insGhost.src = "img/instructions/ghostPlat.png";
+	
 	},
 	
     
