@@ -92,6 +92,9 @@ app.main = {
 	player1KeyControls: undefined,
 	player2KeyControls: undefined,
 	activePlayers: undefined,
+	
+	gradAlph: undefined,
+	gradFadeout: undefined,
     
     // methods
 	init : function() {
@@ -247,6 +250,8 @@ app.main = {
 		this.player1KeyControls = "FALSE";
 		this.player2KeyControls = "FALSE";
 		this.activePlayers = 0;
+		this.gradAlph = 0;
+		this.gradFadeout = "TRUE";
 		this.update();
 	},
 	
@@ -295,7 +300,7 @@ app.main = {
 		this.startPlatform.y = this.HEIGHT * 3/5;
 			
 		this.gamestate = gamestate;
-		this.menuState = 1;
+		//this.menuState = 1;
 		this.insState = 1;
 		this.charXCrop = 0;
 	},
@@ -490,7 +495,7 @@ app.main = {
 				this.drawLib.Shadowrect(this.ctx,0,height/2 + 100,width,100, '#fff');
 				this.drawLib.text(this.ctx,"Press START to Play!",width/2, height/2 + 165, 45, '#000');
 			}
-			if(this.player1KeyControls == "TRUE" && this.player2KeyControls == "TRUE"){
+			if(pad[0] == undefined && this.player1KeyControls == "TRUE" && this.player2KeyControls == "TRUE"){
 				this.drawLib.Shadowrect(this.ctx,0,height/2 + 100,width,100, '#fff');
 				this.drawLib.text(this.ctx,"Press [ENTER] to Start the Game!",width/2, height/2 + 165, 45, '#000');
 				
@@ -500,10 +505,14 @@ app.main = {
 			
 			if(pad[0] != undefined ){
 				this.drawLib.fadeText(this.ctx,'Press B to return to the main',width/2,40,25,'#fff',this.fadeAlph);
+				this.drawLib.fadeText(this.ctx,'Press Any Button to Join',width/2,height - 20,25,'#fff',this.fadeAlph);
 			}
 			else{
-				this.drawLib.fadeText(this.ctx,'Press [backspace] to return to the main menu',width/2,40,25,'#fff',this.fadeAlph);
+				this.drawLib.fadeText(this.ctx,'Press [BACKSPACE] to return to the main menu',width/2,40,25,'#fff',this.fadeAlph);
+				this.drawLib.fadeText(this.ctx,'Press your designated keys to join',width/2,height - 20,25,'#fff',this.fadeAlph);
 			}
+			
+		
 			
 		}
 		if(this.gamestate == "GAME"){
@@ -548,67 +557,8 @@ app.main = {
 			this.ctx.drawImage(this.backImages[1], 0, this.backSpeed - 1080);
 			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed);
 			
-			//gradient bakcground
-			//stay between 1 and 0
-			if(this.imgOpacityDown < 0){
-				this.imgOpacityDown = 0;
-				this.imgIndex++;
-				this.imgSwitch = !this.imgSwitch;
-			}
-			else if(this.imgOpacityDown > 1){
-				this.imgOpacityDown = 1;
-				this.imgIndex++;
-				this.imgSwitch = !this.imgSwitch;
-			}
 			
-			if(this.imgOpacityUp > 1){
-				this.imgOpacityUp = 1;
-			}
-			else if(this.imgOpacityUp < 0){
-				this.imgOpacityUp = 0;
-			}
-			
-			//if the direction is switched
-			if(!this.imgSwitch){
-			
-				this.imgOpacityDown -= .001;
-				this.imgOpacityUp += .001;
-			}
-			else{
-				
-				var temp = this.imgOpacityDown;
-				
-				this.imgOpacityDown = this.imgOpacityUp;
-				this.imgOpacityUp = temp;
-				this.imgSwitch = !this.imgSwitch;
-			}
-			
-			//reset imgIndex
-			if(this.imgIndex == 4){
-				this.imgIndex =  0;
-			}
-			
-			//draw the images in order {first image then second image
-			this.ctx.save();
-			this.ctx.globalAlpha = this.imgOpacityDown;
-			this.ctx.drawImage(this.gradients[this.imgIndex], 0, 50);
-			this.ctx.restore();
-			
-			this.ctx.save();
-			this.ctx.globalAlpha = this.imgOpacityUp;
-			
-			//loop back to the first image if the above is the last image in the array
-			if(this.imgIndex + 1 >= 4){
-			
-				this.ctx.drawImage(this.gradients[0], 0, 0);
-			}
-			else{
-			
-				this.ctx.drawImage(this.gradients[this.imgIndex + 1], 0, 50);
-			}
-			
-			this.ctx.restore();
-			//end gradients
+			this.drawLib.fadeGradient(this.ctx,this.gradAlph,this.gradients[0]);
 			
 			if(this.startPlatform.active)
 			{
@@ -693,64 +643,8 @@ app.main = {
 			this.ctx.drawImage(this.backImages[1], 0, this.backSpeed - 1080);
 			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed);
 			
-			// gradient bakcground 
-			//stay between 1 and 0
-			if(this.imgOpacityDown < 0){
-				this.imgOpacityDown = 0;
-				this.imgIndex++;
-				this.imgSwitch = !this.imgSwitch;
-			}
-			else if(this.imgOpacityDown > 1){
-				this.imgOpacityDown = 1;
-				this.imgIndex++;
-				this.imgSwitch = !this.imgSwitch;
-			}
-			
-			if(this.imgOpacityUp > 1){
-				this.imgOpacityUp = 1;
-			}
-			else if(this.imgOpacityUp < 0){
-				this.imgOpacityUp = 0;
-			}
-			
-			//if the direction is switched
-			if(!this.imgSwitch){
-			
-				this.imgOpacityDown -= .015;
-				this.imgOpacityUp += .015;
-			}
-			else{
-				
-				var temp = this.imgOpacityDown;
-				
-				this.imgOpacityDown = this.imgOpacityUp;
-				this.imgOpacityUp = temp;
-				this.imgSwitch = !this.imgSwitch;
-			}
-			
-			
-			//draw the images in order {first image then second image
-			this.ctx.save();
-			this.ctx.globalAlpha = this.imgOpacityDown;
-			this.ctx.drawImage(this.gradients[this.imgIndex], 0, 200);
-			this.ctx.restore();
-			
-			this.ctx.save();
-			this.ctx.globalAlpha = this.imgOpacityUp;
-			
-			//loop back to the first image if the above is the last image in the array
-			
-			if(this.imgIndex + 1 >= 4){
-			
-				this.imgIndex = 0;
-			}
-			else{
-			
-				this.ctx.drawImage(this.gradients[this.imgIndex + 1], 0, 200);
-			}
-			
-			this.ctx.restore();
-			//end gradients
+
+			this.drawLib.fadeGradient(this.ctx,this.gradAlph,this.gradients[3]);
 			
 			if(this.startPlatform.active)
 			{
@@ -841,9 +735,14 @@ app.main = {
 				this.drawLib.text(this.ctx,"You're all bad at this!",width/2, 300, 100, '#fff');
 			}
 			
-			this.drawLib.text(this.ctx,"Press [spacebar] or START to play again",width/2, 600, 80, '#fff');
+			if(pad[0] != undefined ){
+				this.drawLib.fadeText(this.ctx,'Press  START to play again',width/2,height - 400,50,'#fff',this.fadeAlph);
+			}
+			else{
+					this.drawLib.fadeText(this.ctx,'Press [ENTER]  to play again',width/2,height - 400,50,'#fff',this.fadeAlph);
+			}
 			
-			this.drawLib.text(this.ctx,"You lasted " + this.time + " seconds",width/2, 800, 50, '#fff');
+			this.drawLib.text(this.ctx,"You lasted " + this.time + " seconds",width/2, 500, 50, '#fff');
 		}
 		if(this.gamestate == "SINGLEEND"){
 		
@@ -856,13 +755,35 @@ app.main = {
 			
 			this.drawLib.text(this.ctx,"You Lasted: "+ this.singleClock + " seconds",width/2, 300, 100, '#fff');
 			
+			if(pad[0] != undefined ){
+				this.drawLib.fadeText(this.ctx,'Press START to return to the main menu',width/2,height - 500,50,'#fff',this.fadeAlph);
+			}
+			else{
+					this.drawLib.fadeText(this.ctx,'Press [ENTER] to return to the main menu',width/2,height - 500,50,'#fff',this.fadeAlph);
+			}
 			
-			this.drawLib.text(this.ctx,"Press [spacebar] or START to play again",width/2, 600, 80, '#fff');
 			
 			
 		}
 		if(this.gamestate == "INS"){
 		this.drawINS();
+		}
+		
+		if(this.gamestate == "CREDITS"){
+				this.ctx.fillStyle = "#000";
+			this.ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+			this.drawLib.text(this.ctx,"Ryan Goucher: Artist, Game Designer  ",width/2, 300, 30, '#fff');
+			this.drawLib.text(this.ctx,"Chad Karon: Gameplay Programming, Animation Programming, Game Designer",width/2, 400, 30, '#fff');
+			this.drawLib.text(this.ctx,"Andrew Merriman: Lead Gameplay Programmer, Game Designer  ",width/2, 500, 30, '#fff');
+			this.drawLib.text(this.ctx,"Forrest Shooster: Sound Designer, Game Designer ",width/2, 600, 30, '#fff');
+			this.drawLib.text(this.ctx,"Kurt Stohrer: GUI Designer & Programmer , Game Designer ",width/2, 700, 30, '#fff');
+			
+			if(pad[0] != undefined ){
+				this.drawLib.fadeText(this.ctx,'Press B to return to the main menu',width - 300,40,25,'#fff',this.fadeAlph);
+			}
+			else{
+				this.drawLib.fadeText(this.ctx,'Press [BACKSPACE] to return to the main menu',width- 400,40,25,'#fff',this.fadeAlph);
+			}
 		}
 	},
 	drawINS: function(){
@@ -927,7 +848,7 @@ app.main = {
 				this.drawLib.fadeText(this.ctx,'Press B to return to the main menu',width - 300,40,25,'#fff',this.fadeAlph);
 			}
 			else{
-				this.drawLib.fadeText(this.ctx,'Press [backspace] to return to the main menu',width- 400,40,25,'#fff',this.fadeAlph);
+				this.drawLib.fadeText(this.ctx,'Press [BACKSPACE] to return to the main menu',width- 400,40,25,'#fff',this.fadeAlph);
 			}
 			
 		
@@ -993,6 +914,7 @@ app.main = {
 					}
 				}
 			}
+			if(this.gamestate == "GAME"){
 			for(var j = 0; j < this.players.length; j++)
 			{
 				var player2 = this.players[j];
@@ -1026,12 +948,16 @@ app.main = {
 				}
 			}
 		}
+	}
 	},
 	
 	update: function()
 	{
 		requestAnimationFrame(this.update.bind(this));
 		var pad = navigator.getGamepads();
+		var width = this.WIDTH;
+		var height = this.HEIGHT;
+		
 		this.startButtonTick --;
 		
 		if(this.fadeout == "TRUE"){
@@ -1108,6 +1034,14 @@ app.main = {
 									makeSound=true;
 								}
 							}
+							if(this.menuState == 4){
+								
+								if(this.startButtonTick < 0 ){
+									this.gamestate = "CREDITS";
+									this.startButtonTick = 30;
+									makeSound=true;
+								}
+							}
 					
 				}
 			}
@@ -1131,18 +1065,24 @@ app.main = {
 			}
 			if(app.keydown[13]){
 				makeSound=true;
-				if(this.menuState == 1){
-					this.gamestate = "SINGLE";
-					this.startTime = Date.now();
-				}
-				if(this.menuState == 2){
-					this.gamestate = "MAIN";
-					
-				}
-				if(this.menuState == 3){
-					this.gamestate = "INS";
-				}
+				if(this.startButtonTick < 0 ){
+							
+					if(this.menuState == 1){
+						this.gamestate = "SINGLE";
+						this.startTime = Date.now();
+					}
+					if(this.menuState == 2){
+						this.gamestate = "MAIN";
+						
+					}
+					if(this.menuState == 3){
+						this.gamestate = "INS";
+					}
+					if(this.menuState == 4){
+						this.gamestate = "CREDITS";
+					}
 				
+			}
 			}
 		
 		}
@@ -1159,39 +1099,48 @@ app.main = {
 				this.charXCrop = 0;
 			
 			}
-			if(app.keydown[104]){
 			
-				this.player2KeyControls = "TRUE";
+			if(app.keydown[104]){this.player2KeyControls = "TRUE";}
+			if(app.keydown[100]){this.player2KeyControls = "TRUE";}
+			if(app.keydown[102]){this.player2KeyControls = "TRUE";}
+			if(app.keydown[101]){this.player2KeyControls = "TRUE";}
+			if(app.keydown[83]){this.player1KeyControls = "TRUE";}
+			if(app.keydown[65]){this.player1KeyControls = "TRUE";}
+			if(app.keydown[68]){this.player1KeyControls = "TRUE";}
+			if(app.keydown[87]){this.player1KeyControls = "TRUE";}
+			
+			if(app.keydown[13]){
+			
+				if(this.startButtonTick < 0 ){
+						if(pad[0] != undefined && pad[1] != undefined || pad[0] != undefined && this.player2KeyControls == "TRUE" || this.player1KeyControls == "TRUE" && this.player2KeyControls == "TRUE"){
+								this.gamestate = "GAME";
+								this.startTime = Date.now();
+								this.startButtonTick = 30;
+								makeSound=true;
+						}
+					}
+			}
+			/*
+			if(pad[0] != undefined && pad[1] != undefined || pad[0] != undefined && this.player2KeyControls == "TRUE"){
+				this.drawLib.Shadowrect(this.ctx,0,height/2 + 100,width,100, '#fff');
+				this.drawLib.text(this.ctx,"Press START to Play!",width/2, height/2 + 165, 45, '#000');
+			}
+			if(this.player1KeyControls == "TRUE" && this.player2KeyControls == "TRUE"){
+				this.drawLib.Shadowrect(this.ctx,0,height/2 + 100,width,100, '#fff');
+				this.drawLib.text(this.ctx,"Press [ENTER] to Start the Game!",width/2, height/2 + 165, 45, '#000');
 				
-			}
-			if(app.keydown[100]){
-			
-				this.player2KeyControls = "TRUE";
-			}
-			if(app.keydown[102]){
-			
-				this.player2KeyControls = "TRUE";
-			}
-			if(app.keydown[101]){
-			
-				this.player2KeyControls = "TRUE";
-			}
-			
-			if(app.keydown[80]){
-			
-				this.gamestate = "GAME";
-				makeSound=true;
-				this.startTime = Date.now();
-			}
-			
+		}
+			*/
 			for(var i = 0; i < pad.length; i++)
 			{
 				if(pad[i] != undefined && pad[i].buttons[9].pressed){
 					if(this.startButtonTick < 0 ){
-						this.gamestate = "GAME";
-						this.startTime = Date.now();
-						this.startButtonTick = 30;
-						makeSound=true;
+						if(pad[0] != undefined && pad[1] != undefined || pad[0] != undefined && this.player2KeyControls == "TRUE" || this.player1KeyControls == "TRUE" && this.player2KeyControls == "TRUE"){
+								this.gamestate = "GAME";
+								this.startTime = Date.now();
+								this.startButtonTick = 30;
+								makeSound=true;
+						}
 					}
 				}
 			}
@@ -1222,6 +1171,20 @@ app.main = {
 		
 		if(this.gamestate == "GAME" || this.gamestate == "SINGLE")
 		{
+				
+					if(this.gradFadeout == "TRUE"){
+						this.gradAlph -= .002;
+					}
+					if(this.gradFadeout == "FALSE"){
+						this.gradAlph += .002;
+					}
+					if(this.gradAlph < 0.2 ){
+						this.gradFadeout = "FALSE";
+					
+					}
+					if(this.gradAlph >= .5){
+						this.gradFadeout = "TRUE";
+					}
 			//loop through and update the players
 			this.ticks++;
 			this.time = (Date.now() - this.startTime) / 1000;
@@ -1254,7 +1217,7 @@ app.main = {
 		
 			if(this.platforms1[0].y + this.PLATFORM_DIFFERENCE > this.startPlatform.y && this.startPlatform.active)
 			{
-				//this.startPlatform.update(this.dt, this.speed);
+				this.startPlatform.update(this.dt, this.speed);
 			}
 
 			for(var j = 0; j < this.platformArrays.length; j++)
@@ -1357,8 +1320,12 @@ app.main = {
 		}
 		
 		if(this.gamestate == "END"){
-			if(app.keydown[32]){
-				this.reset("MAIN");
+			
+			if(app.keydown[13]){
+				if(this.startButtonTick < 0 ){
+						this.reset("MAIN");
+						this.startButtonTick = 30;
+					}
 			}
 						
 			for(var i = 0; i < pad.length; i++)
@@ -1373,8 +1340,12 @@ app.main = {
 		
 		}
 		if(this.gamestate == "SINGLEEND"){
-			if(app.keydown[32]){
-				this.reset();
+			
+			if(app.keydown[13]){
+				if(this.startButtonTick < 0 ){
+						this.reset("TITLE");
+						this.startButtonTick = 30;
+					}
 			}
 						
 			for(var i = 0; i < pad.length; i++)
@@ -1457,6 +1428,29 @@ app.main = {
 			
 		
 		}
+		if(this.gamestate == "CREDITS" ){
+			
+			for(var i = 0; i < pad.length; i++)
+			{
+				
+				if(pad[i] != undefined && pad[i].buttons[1].pressed){
+					if(this.startButtonTick < 0 ){
+						this.reset("TITLE");
+						this.startButtonTick = 30;
+						
+					}
+				}
+		
+			}
+				if(app.keydown[8]){
+			
+				if(this.startButtonTick < 0 ){
+						this.reset("TITLE");
+						this.startButtonTick = 30;
+						
+					}
+		}
+	}
 		
 		this.checkCollosions()
 		this.draw();

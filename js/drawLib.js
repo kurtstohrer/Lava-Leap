@@ -34,6 +34,13 @@ app.drawLib = {
 		ctx.fillText(string, x, y);
 		ctx.restore();
 	},
+	fadeGradient: function(ctx, alph, img)
+	{
+		ctx.save();
+		ctx.globalAlpha=alph;
+		ctx.drawImage(img,0,0);
+		ctx.restore();
+	},
 	outlinedText: function(ctx, string, x, y, size, col, out)
 	{
 		ctx.save();
