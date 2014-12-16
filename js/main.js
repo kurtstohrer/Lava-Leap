@@ -440,7 +440,7 @@ app.main = {
 			if(pad[2] != undefined){
 				this.drawLib.outRect(this.ctx,width/2,0,width/4,height,'#9e7cd4','#3f2072');
 				this.drawLib.text(this.ctx,'3',width/2 +100,270,300,'#3f2072');
-				this.ctx.drawImage(this.greenIdle, //image
+				this.ctx.drawImage(this.purpleIdle, //image
 						this.charXCrop, //x of the sprite sheet
 						0,// y of the sprite sheet
 						256, // width of the crop
