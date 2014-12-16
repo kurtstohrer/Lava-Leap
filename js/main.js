@@ -172,7 +172,7 @@ app.main = {
 		this.islandImage = new Image();
 		this.islandImage.src = "img/parrallax_background_background.png";
 		
-		for(var i = 0; i < 4; i++){
+		for(var i = 0; i < 6; i++){
 		
 			this.backImages.push(new Image());
 		}
@@ -181,6 +181,8 @@ app.main = {
 		this.backImages[1].src = "img/largewalltile-scaled-v2.png";
 		this.backImages[2].src = "img/largewalltile-scaled-v3.png";
 		this.backImages[3].src = "img/parrallax_background_foreground.png";
+		this.backImages[4].src = "img/background_face_fullsize.png";
+		this.backImages[5].src = "img/background_whale_fullsize.png";
 		
 		for(var i = 0; i < 4; i++){
 		
@@ -527,7 +529,8 @@ app.main = {
 			//BEGIN CHAD
 			//background scrolling
 			//if the background moves off screen, reset it
-			if(this.backSpeed >= 1080*4){
+			//Adjusted for three more backgrounds
+			if(this.backSpeed >= 1080*7){
 				
 				this.backSpeed = 0;
 			}
@@ -550,11 +553,13 @@ app.main = {
 			this.parallaxBackSpeed += (this.speed+20) * this.dt;
 			this.parallaxFrontSpeed += (this.speed+50) * this.dt;
 			
-			this.ctx.drawImage(this.islandImage, 400, 0);
-			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed - (1080 * 4));
-			this.ctx.drawImage(this.backImages[3], 0, this.backSpeed - (1080 * 3));
-			this.ctx.drawImage(this.backImages[2], 0, this.backSpeed - (1080 * 2));
-			this.ctx.drawImage(this.backImages[1], 0, this.backSpeed - 1080);
+			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed - (1080 * 7));
+			this.ctx.drawImage(this.backImages[1], 0, this.backSpeed - (1080 * 6));
+			this.ctx.drawImage(this.backImages[4], 0, this.backSpeed - (1080 * 5));
+			this.ctx.drawImage(this.backImages[3], 0, this.backSpeed - (1080 * 4));
+			this.ctx.drawImage(this.backImages[2], 0, this.backSpeed - (1080 * 3));
+			this.ctx.drawImage(this.backImages[5], 0, this.backSpeed - (1080 * 2));
+			this.ctx.drawImage(this.backImages[2], 0, this.backSpeed - 1080);
 			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed);
 			
 			
@@ -614,8 +619,8 @@ app.main = {
 		
 		if(this.gamestate == "SINGLE"){
 			
-			
-			if(this.backSpeed >= 1080 * 4){
+			//again, altered to add three more backgrounds
+			if(this.backSpeed >= 1080 * 7){
 				
 				this.backSpeed = 0;
 			}
@@ -637,10 +642,14 @@ app.main = {
 			
 			//draw backgrounds
 			this.ctx.drawImage(this.islandImage, 400, 0);
-			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed - (1080 * 4));
-			this.ctx.drawImage(this.backImages[3], 0, this.backSpeed - (1080 * 3));
-			this.ctx.drawImage(this.backImages[2], 0, this.backSpeed - (1080 * 2));
-			this.ctx.drawImage(this.backImages[1], 0, this.backSpeed - 1080);
+			//Ryan edit: 
+			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed - (1080 * 7));
+			this.ctx.drawImage(this.backImages[1], 0, this.backSpeed - (1080 * 6));
+			this.ctx.drawImage(this.backImages[4], 0, this.backSpeed - (1080 * 5));
+			this.ctx.drawImage(this.backImages[3], 0, this.backSpeed - (1080 * 4));
+			this.ctx.drawImage(this.backImages[2], 0, this.backSpeed - (1080 * 3));
+			this.ctx.drawImage(this.backImages[5], 0, this.backSpeed - (1080 * 2));
+			this.ctx.drawImage(this.backImages[2], 0, this.backSpeed - 1080);
 			this.ctx.drawImage(this.backImages[0], 0, this.backSpeed);
 			
 
