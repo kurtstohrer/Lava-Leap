@@ -1192,7 +1192,7 @@ app.main = {
 			this.speed = 150 + this.time;// * 0.5;
 			for(var i = 0; i < this.players.length; i++){
 				
-				this.players[i].update(this.dt);
+				this.players[i].update(this.dt, this.speed);
 				while(this.players[i].y < 200)
 				{
 					for(var j = 0; j < this.players.length; j++)

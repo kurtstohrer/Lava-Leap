@@ -36,10 +36,12 @@ var Player = function Player(x, y, images, controls){
 	this.jumping = false;
 	this.falling = false;
 	this.flipped = false;
+	
+	this.state = "idle";
 }
 
 //update
-Player.prototype.update = function update(dt)
+Player.prototype.update = function update(dt, speed)
 {
 	if(this.active)
 	{
@@ -213,7 +215,34 @@ Player.prototype.update = function update(dt)
 		this.yVelocity += this.gravity;
 		this.y += this.yVelocity * dt;
 		if(this.y > 1080) this.active = false;
+		
+		this.state = "idle";
+		if(this.y - this.prevy - speed * dt < -1)
+		{
+			this.state = "jumping";
+		}
+		else if(this.y - this.prevy - speed * dt > 1)
+		{
+			this.state = "falling";
+		}
+		else if(this.x != this.prevx);
+		{
+			this.state = "running";
+			if(this.platform && this.platform.type == "moving" && Math.abs(this.x - this.prevx - this.platform.velocity * dt) < 1)
+			{
+				this.state == "idle";
+			}
+		}
+		if(this.x < this.prevx)
+		{
+			this.flipped = true;
+		}
+		else if(this.x > this.prevx)
+		{
+			this.flipped = false;
+		}
 	}
+	console.log(this.state);
 };
 
 //draw
@@ -233,7 +262,7 @@ Player.prototype.draw = function draw(ctx){
 				
 				ctx.scale(-1, 1);
 				
-				if(this.idle){
+				if(this.state == "idle"){
 					ctx.drawImage(
 						this.images[0], //image
 						this.imgIndex * 32, //x of the sprite sheet
@@ -245,7 +274,7 @@ Player.prototype.draw = function draw(ctx){
 						this.width, // width to draw the image
 						this.height); // height to draw the image
 				}
-				else if(this.runningLeft){
+				else if(this.state == "running"){
 				
 					ctx.drawImage(
 						this.images[1], //image
@@ -258,7 +287,7 @@ Player.prototype.draw = function draw(ctx){
 						this.width, // width to draw the image
 						this.height); // height to draw the image
 				}
-				else if(this.jumping){
+				else if(this.state == "jumping"){
 					ctx.drawImage(
 						this.images[2], //image
 						this.imgIndex * 32, //x of the sprite sheet
@@ -270,7 +299,7 @@ Player.prototype.draw = function draw(ctx){
 						this.width, // width to draw the image
 						this.height); // height to draw the image
 				}
-				else if(this.falling){
+				else if(this.state == "falling"){
 					ctx.drawImage(
 						this.images[3], //image
 						this.imgIndex * 32, //x of the sprite sheet
@@ -285,7 +314,7 @@ Player.prototype.draw = function draw(ctx){
 			}
 			else{
 				
-				if(this.idle){
+				if(this.state == "idle"){
 					ctx.drawImage(
 						this.images[0], //image
 						this.imgIndex * 32, //x of the sprite sheet
@@ -297,7 +326,7 @@ Player.prototype.draw = function draw(ctx){
 						this.width, // width to draw the image
 						this.height); // height to draw the image
 				}
-				else if(this.runningRight){
+				else if(this.state == "running"){
 				
 					ctx.drawImage(
 						this.images[1], //image
@@ -310,7 +339,7 @@ Player.prototype.draw = function draw(ctx){
 						this.width, // width to draw the image
 						this.height); // height to draw the image
 				}
-				else if(this.jumping){
+				else if(this.state == "jumping"){
 				
 					ctx.drawImage(
 						this.images[2], //image
@@ -323,7 +352,7 @@ Player.prototype.draw = function draw(ctx){
 						this.width, // width to draw the image
 						this.height); // height to draw the image
 				}
-				else if(this.falling){
+				else if(this.state == "falling"){
 				
 					ctx.drawImage(
 						this.images[3], //image
@@ -355,7 +384,7 @@ Player.prototype.animate = function(){
 			// reset tics
 			this.tics = 0;
 			
-			if(this.idle){
+			if(this.state == "idle"){
 			
 				// if we have reached the end of the sprite sheet
 				// if not, increment the imgIndex
@@ -366,7 +395,7 @@ Player.prototype.animate = function(){
 				}
 				else this.imgIndex += 1;
 			}
-			else if(this.runningLeft || this.runningRight){
+			else if(this.state == "running"){
 			
 				// if we have reached the end of the sprite sheet
 				// if not, increment the imgIndex
@@ -377,7 +406,7 @@ Player.prototype.animate = function(){
 				}
 				else this.imgIndex += 1;
 			}
-			else if(this.jumping || this.falling){
+			else if(this.state == "jumping" || this.state == "falling"){
 			
 				this.imgIndex = 0;
 			}
